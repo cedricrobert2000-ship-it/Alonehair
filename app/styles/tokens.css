@@ -184,6 +184,26 @@
   /* Tiroirs */
   --drawer-w: 440px;
 
+  /* En-tête */
+  --header-h-compact: 56px;
+  --logo-w: 150px;
+  --logo-w-mobile: 120px;
+  --mega-card-w: 200px;
+  --cart-count: 18px;
+  --cart-thumb: 96px;
+  --color-line-on-ink: rgb(255 255 255 / 0.15);
+  --opacity-soft: 0.7;
+
+  /* Fiche produit */
+  --pdp-info-w: 460px;
+  --pdp-thumb: 56px;
+  --pdp-gallery-max: calc((100svh - var(--header-h) - var(--space-12)) * 3 / 4);
+  --pdp-sticky-top: calc(var(--header-h) + var(--space-6));
+  --gallery-dot: 6px;
+
+  /* Collection */
+  --plp-side-w: 240px;
+
   /* Icônes et boutons icône */
   --icon-btn: 44px;
   --burger-w: 22px;

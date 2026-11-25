@@ -1,8 +1,8 @@
 import {useOptimisticCart} from '@shopify/hydrogen';
-import {Link} from 'react-router';
 import type {CartApiQueryFragment} from 'storefrontapi.generated';
 import {useAside} from '~/components/Aside';
 import {CartLineItem, type CartLine} from '~/components/CartLineItem';
+import {Button} from '~/components/ui/Button';
 import {CartSummary} from './CartSummary';
 
 export type CartLayout = 'page' | 'aside';
@@ -13,7 +13,7 @@ export type CartMainProps = {
 };
 
 export type LineItemChildrenMap = {[parentId: string]: CartLine[]};
-/** Returns a map of all line items and their children. */
+
 function getLineItemChildrenMap(lines: CartLine[]): LineItemChildrenMap {
   const children: LineItemChildrenMap = {};
   for (const line of lines) {
@@ -32,78 +32,41 @@ function getLineItemChildrenMap(lines: CartLine[]): LineItemChildrenMap {
   }
   return children;
 }
+
 /**
- * The main cart component that displays the cart items and summary.
- * It is used by both the /cart route and the cart aside dialog.
+ * Contenu du panier, partagé par le tiroir et la page /cart.
+ * Les actions sont optimistes : la quantité change tout de suite à l'écran.
  */
 export function CartMain({layout, cart: originalCart}: CartMainProps) {
-  // The useOptimisticCart hook applies pending actions to the cart
-  // so the user immediately sees feedback when they modify the cart.
   const cart = useOptimisticCart(originalCart);
+  const lines = cart?.lines?.nodes ?? [];
+  const hasItems = (cart?.totalQuantity ?? 0) > 0;
+  const childrenMap = getLineItemChildrenMap(lines);
 
-  const linesCount = Boolean(cart?.lines?.nodes?.length || 0);
-  const withDiscount =
-    cart &&
-    Boolean(cart?.discountCodes?.filter((code) => code.applicable)?.length);
-  const className = `cart-main ${withDiscount ? 'with-discount' : ''}`;
-  const cartHasItems = cart?.totalQuantity ? cart.totalQuantity > 0 : false;
-  const childrenMap = getLineItemChildrenMap(cart?.lines?.nodes ?? []);
+  if (!hasItems) return <CartEmpty layout={layout} />;
 
   return (
-    <section
-      className={className}
-      aria-label={layout === 'page' ? 'Cart page' : 'Cart drawer'}
-    >
-      <CartEmpty hidden={linesCount} layout={layout} />
-      <div className="cart-details">
-        <p id="cart-lines" className="sr-only">
-          Line items
-        </p>
-        <div>
-          <ul aria-labelledby="cart-lines">
-            {(cart?.lines?.nodes ?? []).map((line) => {
-              // we do not render non-parent lines at the root of the cart
-              if (
-                'parentRelationship' in line &&
-                line.parentRelationship?.parent
-              ) {
-                return null;
-              }
-              return (
-                <CartLineItem
-                  key={line.id}
-                  line={line}
-                  layout={layout}
-                  childrenMap={childrenMap}
-                />
-              );
-            })}
-          </ul>
-        </div>
-        {cartHasItems && <CartSummary cart={cart} layout={layout} />}
-      </div>
+    <section className={`cart cart--${layout}`} aria-label={layout === 'page' ? 'Panier' : undefined}>
+      <ul className="cart__lines" aria-label="Articles du panier">
+        {lines.map((line) => {
+          if ('parentRelationship' in line && line.parentRelationship?.parent) return null;
+          return <CartLineItem key={line.id} line={line} layout={layout} childrenMap={childrenMap} />;
+        })}
+      </ul>
+      <CartSummary cart={cart} layout={layout} />
     </section>
   );
 }
 
-function CartEmpty({
-  hidden = false,
-}: {
-  hidden: boolean;
-  layout?: CartMainProps['layout'];
-}) {
+function CartEmpty({layout}: {layout: CartLayout}) {
   const {close} = useAside();
   return (
-    <div hidden={hidden}>
-      <br />
-      <p>
-        Looks like you haven&rsquo;t added anything yet, let&rsquo;s get you
-        started!
-      </p>
-      <br />
-      <Link to="/collections" onClick={close} prefetch="viewport">
-        Continue shopping →
-      </Link>
+    <div className="cart-empty">
+      <p className="h4">Votre panier est vide.</p>
+      <p className="text-soft">Nos perruques sont faites main, sur commande, en cheveux 100 % naturels.</p>
+      <span onClick={layout === 'aside' ? close : undefined} role="presentation">
+        <Button to="/collections/perruques">Découvrir les perruques</Button>
+      </span>
     </div>
   );
 }

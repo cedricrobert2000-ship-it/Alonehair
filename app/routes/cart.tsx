@@ -5,7 +5,7 @@ import {CartForm} from '@shopify/hydrogen';
 import {CartMain} from '~/components/CartMain';
 
 export const meta: Route.MetaFunction = () => {
-  return [{title: `Hydrogen | Cart`}];
+  return [{title: 'Panier | Alone Hair'}, {name: 'robots', content: 'noindex'}];
 };
 
 export const headers: HeadersFunction = ({actionHeaders}) => actionHeaders;
@@ -105,8 +105,9 @@ export default function Cart() {
   const cart = useLoaderData<typeof loader>();
 
   return (
-    <div className="cart">
-      <h1>Cart</h1>
+    <div className="container section--sm cart-page">
+      <p className="eyebrow">Commande</p>
+      <h1 className="h1 page-title">Votre panier</h1>
       <CartMain layout="page" cart={cart} />
     </div>
   );

@@ -1,132 +1,89 @@
-import {useLoaderData, Link} from 'react-router';
+import {Link, useLoaderData} from 'react-router';
 import type {Route} from './+types/collections._index';
-import {getPaginationVariables, Image} from '@shopify/hydrogen';
-import type {CollectionFragment} from 'storefrontapi.generated';
-import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
+import {Image} from '@shopify/hydrogen';
+import {seoMeta} from '~/lib/seo';
 
-export async function loader(args: Route.LoaderArgs) {
-  // Start fetching non-critical data without blocking time to first byte
-  const deferredData = loadDeferredData(args);
+/** Collections techniques, jamais affichées dans la liste. */
+const HIDDEN = ['nos-wigs', 'best-sellers'];
 
-  // Await the critical data required to render initial state of the page
-  const criticalData = await loadCriticalData(args);
-
-  return {...deferredData, ...criticalData};
-}
-
-/**
- * Load data necessary for rendering content above the fold. This is the critical data
- * needed to render the page. If it's unavailable, the whole page should 400 or 500 error.
- */
-async function loadCriticalData({context, request}: Route.LoaderArgs) {
-  const paginationVariables = getPaginationVariables(request, {
-    pageBy: 4,
+export const meta: Route.MetaFunction = ({data}) =>
+  seoMeta({
+    title: 'Nos collections',
+    description: 'Perruques, perruques indétectables 13×6, bundles, laces & closures : toutes nos collections en cheveux 100 % naturels.',
+    url: data ? `${data.origin}/collections` : undefined,
   });
 
-  const [{collections}] = await Promise.all([
-    context.storefront.query(COLLECTIONS_QUERY, {
-      variables: paginationVariables,
-    }),
-    // Add other queries here, so that they are loaded in parallel
-  ]);
-
-  return {collections};
-}
-
-/**
- * Load data for rendering content below the fold. This data is deferred and will be
- * fetched after the initial page load. If it's unavailable, the page should still 200.
- * Make sure to not throw any errors here, as it will cause the page to 500.
- */
-function loadDeferredData({context}: Route.LoaderArgs) {
-  return {};
+export async function loader({context, request}: Route.LoaderArgs) {
+  const {collections} = await context.storefront.query(COLLECTIONS_QUERY, {cache: context.storefront.CacheShort()});
+  return {
+    collections: collections.nodes.filter((c) => !HIDDEN.includes(c.handle)),
+    origin: new URL(request.url).origin,
+  };
 }
 
 export default function Collections() {
   const {collections} = useLoaderData<typeof loader>();
-
   return (
-    <div className="collections">
-      <h1>Collections</h1>
-      <PaginatedResourceSection<CollectionFragment>
-        connection={collections}
-        resourcesClassName="collections-grid"
-      >
-        {({node: collection, index}) => (
-          <CollectionItem
-            key={collection.id}
-            collection={collection}
-            index={index}
-          />
-        )}
-      </PaginatedResourceSection>
+    <div className="plp">
+      <header className="plp__head container container--wide" data-reveal>
+        <p className="eyebrow">Boutique</p>
+        <h1 className="display plp__title">Nos collections</h1>
+      </header>
+      <div className="container container--wide section--sm">
+        <ul className="cat-grid cat-grid--wide" data-reveal-group>
+          {collections.map((c, i) => {
+            const image = c.image ?? c.products.nodes[0]?.featuredImage;
+            return (
+              <li key={c.id}>
+                <Link className="catcard" to={`/collections/${c.handle}`} prefetch="intent">
+                  {image ? (
+                    <Image data={image} alt="" aspectRatio="4/5" sizes="(min-width: 1024px) 33vw, 50vw" loading={i < 3 ? 'eager' : 'lazy'} />
+                  ) : (
+                    <span className="catcard__empty" />
+                  )}
+                  <span className="catcard__label">
+                    <span className="catcard__title">{c.title}</span>
+                    <span className="badge">Voir</span>
+                  </span>
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+        <p className="plp__all">
+          <Link className="link" to="/collections/all">
+            Tous nos produits
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }
 
-function CollectionItem({
-  collection,
-  index,
-}: {
-  collection: CollectionFragment;
-  index: number;
-}) {
-  return (
-    <Link
-      className="collection-item"
-      key={collection.id}
-      to={`/collections/${collection.handle}`}
-      prefetch="intent"
-    >
-      {collection?.image && (
-        <Image
-          alt={collection.image.altText || collection.title}
-          aspectRatio="1/1"
-          data={collection.image}
-          loading={index < 3 ? 'eager' : undefined}
-          sizes="(min-width: 45em) 400px, 100vw"
-        />
-      )}
-      <h5>{collection.title}</h5>
-    </Link>
-  );
-}
-
 const COLLECTIONS_QUERY = `#graphql
-  fragment Collection on Collection {
-    id
-    title
-    handle
-    image {
-      id
-      url
-      altText
-      width
-      height
-    }
-  }
-  query StoreCollections(
-    $country: CountryCode
-    $endCursor: String
-    $first: Int
-    $language: LanguageCode
-    $last: Int
-    $startCursor: String
-  ) @inContext(country: $country, language: $language) {
-    collections(
-      first: $first,
-      last: $last,
-      before: $startCursor,
-      after: $endCursor
-    ) {
+  query StoreCollections($country: CountryCode, $language: LanguageCode)
+  @inContext(country: $country, language: $language) {
+    collections(first: 30, sortKey: TITLE) {
       nodes {
-        ...Collection
-      }
-      pageInfo {
-        hasNextPage
-        hasPreviousPage
-        startCursor
-        endCursor
+        id
+        title
+        handle
+        image {
+          url
+          altText
+          width
+          height
+        }
+        products(first: 1) {
+          nodes {
+            featuredImage {
+              url
+              altText
+              width
+              height
+            }
+          }
+        }
       }
     }
   }

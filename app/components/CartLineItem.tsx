@@ -3,21 +3,13 @@ import type {CartLayout, LineItemChildrenMap} from '~/components/CartMain';
 import {CartForm, Image, type OptimisticCartLine} from '@shopify/hydrogen';
 import {useVariantUrl} from '~/lib/variants';
 import {Link} from 'react-router';
-import {ProductPrice} from './ProductPrice';
 import {useAside} from './Aside';
-import type {
-  CartApiQueryFragment,
-  CartLineFragment,
-} from 'storefrontapi.generated';
+import {formatMoney} from '~/lib/format';
+import type {CartApiQueryFragment} from 'storefrontapi.generated';
 
 export type CartLine = OptimisticCartLine<CartApiQueryFragment>;
 
-/**
- * A single line item in the cart. It displays the product image, title, price.
- * It also provides controls to update the quantity or remove the line item.
- * If the line is a parent line that has child components (like warranties or gift wrapping), they are
- * rendered nested below the parent line.
- */
+/** Une ligne du panier : photo, nom, options choisies, prix, quantité, retrait. */
 export function CartLineItem({
   layout,
   line,
@@ -32,150 +24,88 @@ export function CartLineItem({
   const lineItemUrl = useVariantUrl(product.handle, selectedOptions);
   const {close} = useAside();
   const lineItemChildren = childrenMap[id];
-  const childrenLabelId = `cart-line-children-${id}`;
+  const options = selectedOptions.filter((o) => o.value !== 'Default Title');
 
   return (
-    <li key={id} className="cart-line">
-      <div className="cart-line-inner">
-        {image && (
-          <Image
-            alt={title}
-            aspectRatio="1/1"
-            data={image}
-            height={100}
-            loading="lazy"
-            width={100}
-          />
-        )}
-
-        <div>
-          <Link
-            prefetch="intent"
-            to={lineItemUrl}
-            onClick={() => {
-              if (layout === 'aside') {
-                close();
-              }
-            }}
-          >
-            <p>
-              <strong>{product.title}</strong>
-            </p>
-          </Link>
-          <ProductPrice price={line?.cost?.totalAmount} />
-          <ul>
-            {selectedOptions.map((option) => (
-              <li key={option.name}>
-                <small>
-                  {option.name}: {option.value}
-                </small>
+    <li className="cart-line">
+      <div className="cart-line__media">
+        {image && <Image alt={image.altText ?? title} aspectRatio="3/4" data={image} width={96} loading="lazy" />}
+      </div>
+      <div className="cart-line__info">
+        <Link
+          className="cart-line__title"
+          prefetch="intent"
+          to={lineItemUrl}
+          onClick={() => layout === 'aside' && close()}
+        >
+          {product.title}
+        </Link>
+        {options.length > 0 && (
+          <ul className="cart-line__options">
+            {options.map((o) => (
+              <li key={o.name}>
+                {o.name} : {o.value}
               </li>
             ))}
           </ul>
+        )}
+        <div className="cart-line__row">
           <CartLineQuantity line={line} />
+          <p className="cart-line__price">{formatMoney(line?.cost?.totalAmount)}</p>
         </div>
       </div>
-
       {lineItemChildren ? (
-        <div>
-          <p id={childrenLabelId} className="sr-only">
-            Line items with {product.title}
-          </p>
-          <ul aria-labelledby={childrenLabelId} className="cart-line-children">
-            {lineItemChildren.map((childLine) => (
-              <CartLineItem
-                childrenMap={childrenMap}
-                key={childLine.id}
-                line={childLine}
-                layout={layout}
-              />
-            ))}
-          </ul>
-        </div>
+        <ul className="cart-line__children">
+          {lineItemChildren.map((child) => (
+            <CartLineItem childrenMap={childrenMap} key={child.id} line={child} layout={layout} />
+          ))}
+        </ul>
       ) : null}
     </li>
   );
 }
 
-/**
- * Provides the controls to update the quantity of a line item in the cart.
- * These controls are disabled when the line item is new, and the server
- * hasn't yet responded that it was successfully added to the cart.
- */
 function CartLineQuantity({line}: {line: CartLine}) {
   if (!line || typeof line?.quantity === 'undefined') return null;
   const {id: lineId, quantity, isOptimistic} = line;
-  const prevQuantity = Number(Math.max(0, quantity - 1).toFixed(0));
-  const nextQuantity = Number((quantity + 1).toFixed(0));
+  const prev = Math.max(0, quantity - 1);
+  const next = quantity + 1;
 
   return (
-    <div className="cart-line-quantity">
-      <small>Quantity: {quantity} &nbsp;&nbsp;</small>
-      <CartLineUpdateButton lines={[{id: lineId, quantity: prevQuantity}]}>
-        <button
-          aria-label="Decrease quantity"
-          disabled={quantity <= 1 || !!isOptimistic}
-          name="decrease-quantity"
-          value={prevQuantity}
-        >
-          <span>&#8722; </span>
+    <div className="cart-line__qty">
+      <div className="qty" role="group" aria-label="Quantité">
+        <CartLineUpdateButton lines={[{id: lineId, quantity: prev}]}>
+          <button aria-label="Retirer un" disabled={quantity <= 1 || !!isOptimistic} type="submit">
+            −
+          </button>
+        </CartLineUpdateButton>
+        <output aria-live="polite" className="qty__value">
+          {quantity}
+        </output>
+        <CartLineUpdateButton lines={[{id: lineId, quantity: next}]}>
+          <button aria-label="Ajouter un" disabled={!!isOptimistic} type="submit">
+            +
+          </button>
+        </CartLineUpdateButton>
+      </div>
+      <CartForm
+        fetcherKey={getUpdateKey([lineId])}
+        route="/cart"
+        action={CartForm.ACTIONS.LinesRemove}
+        inputs={{lineIds: [lineId]}}
+      >
+        <button className="cart-line__remove" disabled={!!isOptimistic} type="submit">
+          Retirer
         </button>
-      </CartLineUpdateButton>
-      &nbsp;
-      <CartLineUpdateButton lines={[{id: lineId, quantity: nextQuantity}]}>
-        <button
-          aria-label="Increase quantity"
-          name="increase-quantity"
-          value={nextQuantity}
-          disabled={!!isOptimistic}
-        >
-          <span>&#43;</span>
-        </button>
-      </CartLineUpdateButton>
-      &nbsp;
-      <CartLineRemoveButton lineIds={[lineId]} disabled={!!isOptimistic} />
+      </CartForm>
     </div>
   );
 }
 
-/**
- * A button that removes a line item from the cart. It is disabled
- * when the line item is new, and the server hasn't yet responded
- * that it was successfully added to the cart.
- */
-function CartLineRemoveButton({
-  lineIds,
-  disabled,
-}: {
-  lineIds: string[];
-  disabled: boolean;
-}) {
+function CartLineUpdateButton({children, lines}: {children: React.ReactNode; lines: CartLineUpdateInput[]}) {
   return (
     <CartForm
-      fetcherKey={getUpdateKey(lineIds)}
-      route="/cart"
-      action={CartForm.ACTIONS.LinesRemove}
-      inputs={{lineIds}}
-    >
-      <button disabled={disabled} type="submit">
-        Remove
-      </button>
-    </CartForm>
-  );
-}
-
-function CartLineUpdateButton({
-  children,
-  lines,
-}: {
-  children: React.ReactNode;
-  lines: CartLineUpdateInput[];
-}) {
-  const lineIds = lines.map((line) => line.id);
-
-  return (
-    <CartForm
-      fetcherKey={getUpdateKey(lineIds)}
+      fetcherKey={getUpdateKey(lines.map((l) => l.id))}
       route="/cart"
       action={CartForm.ACTIONS.LinesUpdate}
       inputs={{lines}}
@@ -185,13 +115,6 @@ function CartLineUpdateButton({
   );
 }
 
-/**
- * Returns a unique key for the update action. This is used to make sure actions modifying the same line
- * items are not run concurrently, but cancel each other. For example, if the user clicks "Increase quantity"
- * and "Decrease quantity" in rapid succession, the actions will cancel each other and only the last one will run.
- * @param lineIds - line ids affected by the update
- * @returns
- */
 function getUpdateKey(lineIds: string[]) {
   return [CartForm.ACTIONS.LinesUpdate, ...lineIds].join('-');
 }

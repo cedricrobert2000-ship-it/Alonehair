@@ -22,6 +22,8 @@ export default async function handleRequest(
     // Polices Google Fonts (Manrope pour les titres, Montserrat pour le texte)
     styleSrc: ["'self'", "'unsafe-inline'", 'https://cdn.shopify.com', 'https://fonts.googleapis.com'],
     fontSrc: ["'self'", 'https://cdn.shopify.com', 'https://fonts.gstatic.com'],
+    // Lecteur TikTok de la fiche produit (chargé seulement au clic)
+    frameSrc: ["'self'", 'https://www.tiktok.com'],
   });
 
   const body = await renderToReadableStream(

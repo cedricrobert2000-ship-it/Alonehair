@@ -4,8 +4,10 @@ type MoneyLike = {amount: string; currencyCode: string};
  * Prix au format français : « 550 € », « 49,90 € ».
  * Pas de décimales quand le montant est rond (rendu plus éditorial).
  */
-export function formatMoney(money: MoneyLike | null | undefined) {
-  if (!money) return '';
+export function formatMoney(
+  money: {amount?: string | null; currencyCode?: string | null} | null | undefined,
+) {
+  if (!money?.amount || !money.currencyCode) return '';
   const value = Number(money.amount);
   const isRound = Number.isInteger(value);
   return new Intl.NumberFormat('fr-FR', {

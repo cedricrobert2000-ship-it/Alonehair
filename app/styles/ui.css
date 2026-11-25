@@ -1330,3 +1330,7 @@ html.is-locked body {
     transform: none;
   }
 }
+
+.inline-form .btn {
+  padding-inline: var(--space-5);
+}

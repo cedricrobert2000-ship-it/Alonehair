@@ -1,6 +1,7 @@
 import {Suspense} from 'react';
-import {Await, NavLink} from 'react-router';
+import {Await, Link} from 'react-router';
 import type {FooterQuery, HeaderQuery} from 'storefrontapi.generated';
+import {toPath} from '~/lib/url';
 
 interface FooterProps {
   footer: Promise<FooterQuery | null>;
@@ -8,122 +9,101 @@ interface FooterProps {
   publicStoreDomain: string;
 }
 
-export function Footer({
-  footer: footerPromise,
-  header,
-  publicStoreDomain,
-}: FooterProps) {
+/** Réseaux sociaux de la marque (comptes officiels, liens du site actuel). */
+const SOCIALS = [
+  {label: 'Instagram', href: 'https://www.instagram.com/alone_hair'},
+  {label: 'TikTok', href: 'https://www.tiktok.com/@alonehair'},
+];
+
+/**
+ * Pied de page noir façon Veloraskin : grand logo blanc, colonnes de liens
+ * (menu principal et collections lus dans Shopify), politiques, réseaux.
+ */
+export function Footer({footer: footerPromise, header, publicStoreDomain}: FooterProps) {
+  const domains = [header.shop.primaryDomain?.url, publicStoreDomain];
+  const items = header.menu?.items ?? [];
+  const collections = items.find((i) => i.items?.length)?.items ?? [];
+  const pages = items.filter((i) => !i.items?.length);
+
   return (
-    <Suspense>
-      <Await resolve={footerPromise}>
-        {(footer) => (
-          <footer className="footer">
-            {footer?.menu && header.shop.primaryDomain?.url && (
-              <FooterMenu
-                menu={footer.menu}
-                primaryDomainUrl={header.shop.primaryDomain.url}
-                publicStoreDomain={publicStoreDomain}
-              />
+    <footer className="site-footer">
+      <div className="container container--wide">
+        <div className="site-footer__top">
+          <Link to="/" className="site-footer__logo" aria-label={`${header.shop.name}, accueil`}>
+            <img src="/brand/logo-alone-hair.png" alt="" width={779} height={68} loading="lazy" />
+          </Link>
+
+          <div className="site-footer__cols">
+            {collections.length > 0 && (
+              <FooterCol title="Collections">
+                {collections.map((c) => (
+                  <li key={c.id}>
+                    <Link to={toPath(c.url, domains)} prefetch="intent">
+                      {c.title}
+                    </Link>
+                  </li>
+                ))}
+              </FooterCol>
             )}
-          </footer>
-        )}
-      </Await>
-    </Suspense>
+            <FooterCol title="La maison">
+              {pages.map((p) => (
+                <li key={p.id}>
+                  <Link to={toPath(p.url, domains)} prefetch="intent">
+                    {p.title}
+                  </Link>
+                </li>
+              ))}
+            </FooterCol>
+            <Suspense fallback={null}>
+              <Await resolve={footerPromise} errorElement={null}>
+                {(footer) => {
+                  const policies = [
+                    footer?.shop.shippingPolicy,
+                    footer?.shop.refundPolicy,
+                    footer?.shop.termsOfService,
+                    footer?.shop.privacyPolicy,
+                  ].filter(Boolean);
+                  if (!policies.length) return null;
+                  return (
+                    <FooterCol title="Informations">
+                      {policies.map((p) => (
+                        <li key={p!.id}>
+                          <Link to={`/policies/${p!.handle}`}>{p!.title}</Link>
+                        </li>
+                      ))}
+                    </FooterCol>
+                  );
+                }}
+              </Await>
+            </Suspense>
+          </div>
+        </div>
+
+        <div className="site-footer__bottom">
+          <p>
+            © {new Date().getFullYear()} {header.shop.name}. Cheveux 100 % naturels, faits main.
+          </p>
+          <ul className="site-footer__socials">
+            {SOCIALS.map((s) => (
+              <li key={s.label}>
+                <a href={s.href} target="_blank" rel="noopener noreferrer">
+                  {s.label}
+                  <span className="sr-only"> (nouvel onglet)</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </footer>
   );
 }
 
-function FooterMenu({
-  menu,
-  primaryDomainUrl,
-  publicStoreDomain,
-}: {
-  menu: FooterQuery['menu'];
-  primaryDomainUrl: FooterProps['header']['shop']['primaryDomain']['url'];
-  publicStoreDomain: string;
-}) {
+function FooterCol({title, children}: {title: string; children: React.ReactNode}) {
   return (
-    <nav className="footer-menu" role="navigation">
-      {(menu || FALLBACK_FOOTER_MENU).items.map((item) => {
-        if (!item.url) return null;
-        // if the url is internal, we strip the domain
-        const url =
-          item.url.includes('myshopify.com') ||
-          item.url.includes(publicStoreDomain) ||
-          item.url.includes(primaryDomainUrl)
-            ? new URL(item.url).pathname
-            : item.url;
-        const isExternal = !url.startsWith('/');
-        return isExternal ? (
-          <a href={url} key={item.id} rel="noopener noreferrer" target="_blank">
-            {item.title}
-          </a>
-        ) : (
-          <NavLink
-            end
-            key={item.id}
-            prefetch="intent"
-            style={activeLinkStyle}
-            to={url}
-          >
-            {item.title}
-          </NavLink>
-        );
-      })}
-    </nav>
+    <div className="site-footer__col">
+      <p className="site-footer__title">{title}</p>
+      <ul>{children}</ul>
+    </div>
   );
-}
-
-const FALLBACK_FOOTER_MENU = {
-  id: 'gid://shopify/Menu/199655620664',
-  items: [
-    {
-      id: 'gid://shopify/MenuItem/461633060920',
-      resourceId: 'gid://shopify/ShopPolicy/23358046264',
-      tags: [],
-      title: 'Privacy Policy',
-      type: 'SHOP_POLICY',
-      url: '/policies/privacy-policy',
-      items: [],
-    },
-    {
-      id: 'gid://shopify/MenuItem/461633093688',
-      resourceId: 'gid://shopify/ShopPolicy/23358013496',
-      tags: [],
-      title: 'Refund Policy',
-      type: 'SHOP_POLICY',
-      url: '/policies/refund-policy',
-      items: [],
-    },
-    {
-      id: 'gid://shopify/MenuItem/461633126456',
-      resourceId: 'gid://shopify/ShopPolicy/23358111800',
-      tags: [],
-      title: 'Shipping Policy',
-      type: 'SHOP_POLICY',
-      url: '/policies/shipping-policy',
-      items: [],
-    },
-    {
-      id: 'gid://shopify/MenuItem/461633159224',
-      resourceId: 'gid://shopify/ShopPolicy/23358079032',
-      tags: [],
-      title: 'Terms of Service',
-      type: 'SHOP_POLICY',
-      url: '/policies/terms-of-service',
-      items: [],
-    },
-  ],
-};
-
-function activeLinkStyle({
-  isActive,
-  isPending,
-}: {
-  isActive: boolean;
-  isPending: boolean;
-}) {
-  return {
-    fontWeight: isActive ? 'bold' : undefined,
-    color: isPending ? 'grey' : 'white',
-  };
 }

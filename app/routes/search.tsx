@@ -14,7 +14,7 @@ import type {
 } from 'storefrontapi.generated';
 
 export const meta: Route.MetaFunction = () => {
-  return [{title: `Hydrogen | Search`}];
+  return [{title: 'Recherche | Alone Hair'}, {name: 'robots', content: 'noindex'}];
 };
 
 export async function loader({request, context}: Route.LoaderArgs) {
@@ -41,24 +41,28 @@ export default function SearchPage() {
   if (type === 'predictive') return null;
 
   return (
-    <div className="search">
-      <h1>Search</h1>
+    <div className="search container section--sm">
+      <p className="eyebrow">Recherche</p>
+      <h1 className="h1 page-title">{term ? `« ${term} »` : 'Rechercher'}</h1>
       <SearchForm>
         {({inputRef}) => (
-          <>
+          <div className="inline-form search__form">
             <input
+              className="input"
               defaultValue={term}
               name="q"
-              placeholder="Search…"
+              placeholder="Une perruque, une longueur…"
+              aria-label="Rechercher"
               ref={inputRef}
               type="search"
             />
-            &nbsp;
-            <button type="submit">Search</button>
-          </>
+            <button className="btn" type="submit">
+              Rechercher
+            </button>
+          </div>
         )}
       </SearchForm>
-      {error && <p style={{color: 'red'}}>{error}</p>}
+      {error && <p role="alert">{error}</p>}
       {!term || !result?.total ? (
         <SearchResults.Empty />
       ) : (

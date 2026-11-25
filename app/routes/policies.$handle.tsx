@@ -1,17 +1,17 @@
 import {Link, useLoaderData} from 'react-router';
 import type {Route} from './+types/policies.$handle';
 import {type Shop} from '@shopify/hydrogen/storefront-api-types';
+import {seoMeta} from '~/lib/seo';
 
 type SelectedPolicies = keyof Pick<
   Shop,
   'privacyPolicy' | 'shippingPolicy' | 'termsOfService' | 'refundPolicy'
 >;
 
-export const meta: Route.MetaFunction = ({data}) => {
-  return [{title: `Hydrogen | ${data?.policy.title ?? ''}`}];
-};
+export const meta: Route.MetaFunction = ({data}) =>
+  seoMeta({title: data?.policy.title, description: data?.policy.body, url: data?.url});
 
-export async function loader({params, context}: Route.LoaderArgs) {
+export async function loader({params, context, request}: Route.LoaderArgs) {
   if (!params.handle) {
     throw new Response('No handle was passed in', {status: 404});
   }
@@ -38,23 +38,24 @@ export async function loader({params, context}: Route.LoaderArgs) {
     throw new Response('Could not find the policy', {status: 404});
   }
 
-  return {policy};
+  return {policy, url: `${new URL(request.url).origin}/policies/${policy.handle}`};
 }
 
 export default function Policy() {
   const {policy} = useLoaderData<typeof loader>();
 
   return (
-    <div className="policy">
-      <br />
-      <br />
-      <div>
-        <Link to="/policies">← Back to Policies</Link>
+    <article className="content-page">
+      <header className="content-page__head container">
+        <p className="eyebrow">
+          <Link to="/policies">Informations légales</Link>
+        </p>
+        <h1 className="h1">{policy.title}</h1>
+      </header>
+      <div className="container content-page__body">
+        <div className="prose rte" dangerouslySetInnerHTML={{__html: policy.body}} />
       </div>
-      <br />
-      <h1>{policy.title}</h1>
-      <div dangerouslySetInnerHTML={{__html: policy.body}} />
-    </div>
+    </article>
   );
 }
 

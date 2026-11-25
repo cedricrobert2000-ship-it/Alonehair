@@ -13,9 +13,10 @@ import {
 import type {Route} from './+types/root';
 import {FOOTER_QUERY, HEADER_QUERY} from '~/lib/fragments';
 import resetStyles from '~/styles/reset.css?url';
-import appStyles from '~/styles/app.css?url';
 import tokenStyles from '~/styles/tokens.css?url';
 import uiStyles from '~/styles/ui.css?url';
+import layoutStyles from '~/styles/layout.css?url';
+import pageStyles from '~/styles/pages.css?url';
 import {RevealObserver} from '~/components/ui/Reveal';
 import {PageLayout} from './components/PageLayout';
 
@@ -93,7 +94,7 @@ export async function loader(args: Route.LoaderArgs) {
     consent: {
       checkoutDomain: env.PUBLIC_CHECKOUT_DOMAIN,
       storefrontAccessToken: env.PUBLIC_STOREFRONT_API_TOKEN,
-      withPrivacyBanner: false,
+      withPrivacyBanner: true, // bandeau de consentement cookies Shopify (RGPD)
       // localize the privacy banner
       country: args.context.storefront.i18n.country,
       language: args.context.storefront.i18n.language,
@@ -131,12 +132,7 @@ function loadDeferredData({context}: Route.LoaderArgs) {
 
   // defer the footer query (below the fold)
   const footer = storefront
-    .query(FOOTER_QUERY, {
-      cache: storefront.CacheLong(),
-      variables: {
-        footerMenuHandle: 'footer', // Adjust to your footer menu handle
-      },
-    })
+    .query(FOOTER_QUERY, {cache: storefront.CacheLong()})
     .catch((error: Error) => {
       // Log query errors, but don't throw them so the page can still render
       console.error(error);
@@ -168,9 +164,10 @@ export function Layout({children}: {children?: React.ReactNode}) {
           }}
         />
         <link rel="stylesheet" href={resetStyles}></link>
-        <link rel="stylesheet" href={appStyles}></link>
         <link rel="stylesheet" href={tokenStyles}></link>
         <link rel="stylesheet" href={uiStyles}></link>
+        <link rel="stylesheet" href={layoutStyles}></link>
+        <link rel="stylesheet" href={pageStyles}></link>
         <Meta />
         <Links />
       </head>
@@ -206,25 +203,26 @@ export default function App() {
 
 export function ErrorBoundary() {
   const error = useRouteError();
-  let errorMessage = 'Unknown error';
-  let errorStatus = 500;
-
-  if (isRouteErrorResponse(error)) {
-    errorMessage = error?.data?.message ?? error.data;
-    errorStatus = error.status;
-  } else if (error instanceof Error) {
-    errorMessage = error.message;
-  }
+  const status = isRouteErrorResponse(error) ? error.status : 500;
+  const notFound = status === 404;
 
   return (
-    <div className="route-error">
-      <h1>Oops</h1>
-      <h2>{errorStatus}</h2>
-      {errorMessage && (
-        <fieldset>
-          <pre>{errorMessage}</pre>
-        </fieldset>
-      )}
+    <div className="error-page container">
+      <p className="eyebrow">Erreur {status}</p>
+      <h1 className="display">{notFound ? 'Page introuvable' : 'Un souci technique'}</h1>
+      <p className="lead text-soft">
+        {notFound
+          ? "Cette page n'existe pas ou a changé d'adresse."
+          : 'Le site a rencontré un problème. Réessayez dans un instant.'}
+      </p>
+      <p>
+        <a className="btn" href="/collections/perruques">
+          Voir les perruques
+        </a>{' '}
+        <a className="link" href="/">
+          Retour à l&apos;accueil
+        </a>
+      </p>
     </div>
   );
 }
