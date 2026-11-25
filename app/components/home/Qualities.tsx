@@ -1,4 +1,6 @@
 import {Image} from '@shopify/hydrogen';
+import {SiteImg} from '~/components/ui/SiteImg';
+import type {SiteImage} from '~/lib/site-images';
 
 type Quality = {handle: string; title: string; text?: string | null};
 type Img = {url: string; altText?: string | null; width?: number | null; height?: number | null};
@@ -11,10 +13,13 @@ type Img = {url: string; altText?: string | null; width?: number | null; height?
 export function Qualities({
   qualities,
   image,
+  siteImage,
   text,
 }: {
   qualities: Quality[];
   image?: Img | null;
+  /** image du dossier public/images, prioritaire sur la photo Shopify */
+  siteImage?: SiteImage | null;
   text?: string | null;
 }) {
   if (!qualities.length) return null;
@@ -37,7 +42,11 @@ export function Qualities({
 
         <div className="qualities__stage">
           <div className="qualities__oval">
-            {image && <Image data={image} alt={image.altText ?? ''} sizes="(min-width: 1024px) 60vw, 100vw" loading="lazy" />}
+            {siteImage ? (
+              <SiteImg image={siteImage} sizes="(min-width: 1024px) 70vw, 100vw" />
+            ) : (
+              image && <Image data={image} alt={image.altText ?? ''} sizes="(min-width: 1024px) 60vw, 100vw" loading="lazy" />
+            )}
           </div>
           <ul className="qualities__cards" data-reveal-group>
             {qualities.slice(0, 4).map((q, i) => (

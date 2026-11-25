@@ -13,7 +13,8 @@ import {seoMeta} from '~/lib/seo';
 import {HERO_FIELDS_FRAGMENT, parseHero} from '~/lib/hero';
 import {BrandVideo} from '~/components/ui/BrandVideo';
 import {FitText} from '~/components/ui/FitText';
-import {SITE_IMAGES, srcSetOf} from '~/lib/site-images';
+import {SITE_IMAGES} from '~/lib/site-images';
+import {SiteImg} from '~/components/ui/SiteImg';
 import {Qualities} from '~/components/home/Qualities';
 import {toPath} from '~/lib/url';
 import {stripHtml} from '~/lib/seo';
@@ -83,6 +84,7 @@ export default function Homepage() {
           const title = fieldOf(n.fields, 'title')?.value;
           return title ? [{handle: n.handle, title, text: fieldOf(n.fields, 'text')?.value}] : [];
         })}
+        siteImage={SITE_IMAGES.qualities}
         image={data.bestSellers[2]?.images.nodes[0] ?? data.bestSellers[0]?.images.nodes[0] ?? storyImage(data)}
         text={data.story ? fieldOf(data.story.fields, 'text')?.value : null}
       />
@@ -108,17 +110,7 @@ function Hero({data}: {data: Data}) {
     <section className="hero" aria-label="À la une">
       <div className="hero__media">
         {repoImage ? (
-          <img
-            className="hero__video"
-            src={repoImage.src}
-            srcSet={srcSetOf(repoImage)}
-            sizes="100vw"
-            width={repoImage.width}
-            height={repoImage.height}
-            alt={repoImage.alt}
-            fetchPriority="high"
-            style={{objectPosition: repoImage.position}}
-          />
+          <SiteImg image={repoImage} className="hero__video" sizes="100vw" priority />
         ) : hero.video ? (
           <BrandVideo video={hero.video} videoMobile={hero.videoMobile} className="hero__video" controlClassName="hero__toggle" />
         ) : poster ? (
@@ -313,7 +305,11 @@ function Instagram({
     <section className="insta section" aria-labelledby="insta-title">
       <div className="insta__inner container container--wide" data-reveal>
         <div className="insta__media">
-          {image && <Image data={image} alt="" sizes="(min-width: 1024px) 50vw, 100vw" loading="lazy" aspectRatio="4/5" />}
+          {SITE_IMAGES.instagram ? (
+            <SiteImg image={SITE_IMAGES.instagram} sizes="(min-width: 1024px) 50vw, 100vw" />
+          ) : (
+            image && <Image data={image} alt="" sizes="(min-width: 1024px) 50vw, 100vw" loading="lazy" aspectRatio="4/5" />
+          )}
         </div>
         <div className="insta__box">
           <p className="eyebrow">Instagram</p>

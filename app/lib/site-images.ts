@@ -3,7 +3,7 @@
  * Pour les remplacer sans toucher au code : public/images/LISEZMOI.md.
  *
  * Mettre une entrée à `null` pour revenir au contenu Shopify
- * (ex. le hero reprend alors la vidéo du métaobjet home_hero).
+ * (hero : vidéo du métaobjet home_hero ; autres blocs : photo produit).
  */
 export type SiteImage = {
   src: string;
@@ -16,13 +16,43 @@ export type SiteImage = {
   position?: string;
 };
 
-export const SITE_IMAGES: {heroHome: SiteImage | null} = {
+const DIR = '/images/accueil';
+
+export const SITE_IMAGES: {
+  heroHome: SiteImage | null;
+  qualities: SiteImage | null;
+  instagram: SiteImage | null;
+} = {
   heroHome: {
-    src: '/images/accueil/hero.webp',
-    srcSet: [{src: '/images/accueil/hero-480.webp', width: 480}],
-    width: 713,
-    height: 891,
-    alt: 'Femme aux cheveux bouclés naturels, veste en laine',
+    src: `${DIR}/hero.webp`,
+    srcSet: [
+      {src: `${DIR}/hero-640.webp`, width: 640},
+      {src: `${DIR}/hero-1024.webp`, width: 1024},
+    ],
+    width: 1512,
+    height: 2000,
+    alt: 'Femme aux cheveux bouclés châtain cuivré, veste pied-de-poule',
+    position: '50% 30%',
+  },
+  qualities: {
+    src: `${DIR}/qualites.webp`,
+    srcSet: [
+      {src: `${DIR}/qualites-800.webp`, width: 800},
+      {src: `${DIR}/qualites-1280.webp`, width: 1280},
+    ],
+    width: 2000,
+    height: 1125,
+    alt: 'Longues boucles châtain doré sur une chemise à carreaux',
+  },
+  instagram: {
+    src: `${DIR}/instagram.webp`,
+    srcSet: [
+      {src: `${DIR}/instagram-640.webp`, width: 640},
+      {src: `${DIR}/instagram-1024.webp`, width: 1024},
+    ],
+    width: 1333,
+    height: 2000,
+    alt: 'Femme aux cheveux longs bruns méchés, chemise rayée',
     position: '50% 25%',
   },
 };

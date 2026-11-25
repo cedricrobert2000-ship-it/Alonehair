@@ -15,6 +15,13 @@ Pour ajouter une image ou changer d'emplacement : `app/lib/site-images.ts`
 
 | Fichier | Où il apparaît |
 |---|---|
-| `accueil/hero.webp` (+ `hero-480.webp` pour mobile) | Grande image du haut de l'accueil |
+| `accueil/hero.webp` (+ `hero-640`, `hero-1024`) | Grande image du haut de l'accueil |
+| `accueil/qualites.webp` (+ `-800`, `-1280`) | Photo dans l'ovale du bloc « Naturels, faits main » |
+| `accueil/instagram.webp` (+ `-640`, `-1024`) | Photo du bloc Instagram en bas de l'accueil |
+
+Les fichiers `-640`, `-800`, `-1024`, `-1280` sont des versions plus légères pour
+les téléphones. Si vous ne remplacez que le fichier principal, supprimez-les
+(et retirez la ligne `srcSet` correspondante dans `app/lib/site-images.ts`)
+pour que les téléphones n'affichent pas l'ancienne image.
 
 Les photos produits, collections et l'histoire restent gérées dans Shopify.
