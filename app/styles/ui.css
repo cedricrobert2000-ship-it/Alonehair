@@ -1397,3 +1397,12 @@ html.lenis body {
     transform: none;
   }
 }
+
+/* Mot en italique des titres éditoriaux (« L'histoire », « engagements »…) */
+.accent {
+  font-family: var(--font-accent);
+  font-style: italic;
+  font-weight: var(--weight-regular);
+  letter-spacing: 0;
+  text-transform: none;
+}

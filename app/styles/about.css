@@ -1,0 +1,429 @@
+/*
+ * Page À propos — mise en page façon Organic Care (/about).
+ * Tokens uniquement.
+ */
+
+.about-parallax {
+  position: absolute;
+  inset: 0;
+}
+
+.about-parallax img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 1. Titre + grande photo */
+.about-hero .container {
+  display: grid;
+  gap: var(--space-5);
+  padding-block: var(--space-16) var(--space-12);
+}
+
+.about-hero__title {
+  font-family: var(--font-display);
+  font-size: var(--about-title-size);
+  font-weight: var(--weight-regular);
+  line-height: var(--leading-display);
+  letter-spacing: var(--tracking-display);
+  text-transform: uppercase;
+}
+
+.about-hero__intro {
+  max-width: var(--measure-lead);
+}
+
+.about-hero__media {
+  position: relative;
+  aspect-ratio: var(--about-hero-ratio);
+  overflow: hidden;
+  background: var(--color-surface);
+}
+
+@media (max-width: 767px) {
+  .about-hero__media {
+    aspect-ratio: var(--about-hero-ratio-mobile);
+  }
+}
+
+/* 2. L'histoire : titre, mot en italique + trait, texte à droite */
+.about-story {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.about-story__title,
+.about-values h2,
+.about-founders h2,
+.about-follow h2 {
+  display: grid;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--about-h2-size);
+  font-weight: var(--weight-bold);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-title);
+  text-transform: uppercase;
+}
+
+.about-story__accent {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-2);
+  margin: 0;
+}
+
+.about-story__accent .accent,
+.about-values h2 .accent,
+.about-founders h2 .accent,
+.about-follow h2 .accent {
+  font-size: var(--about-accent-size);
+  line-height: var(--leading-tight);
+}
+
+.about-story__line {
+  flex: 1;
+  height: var(--border-w);
+  margin-bottom: var(--space-3);
+  background: var(--color-ink);
+  transform-origin: left;
+  transition: transform calc(var(--dur-slow) * 1.4) var(--ease-in-out) var(--dur-fast);
+}
+
+.js:not(.reveal-off) .about-story__accent:not(.is-inview) .about-story__line {
+  transform: scaleX(0);
+}
+
+.about-story__text {
+  display: grid;
+  gap: var(--space-4);
+  max-width: var(--measure-lead);
+}
+
+@media (min-width: 1024px) {
+  .about-story__accent {
+    padding-left: 25%;
+  }
+
+  .about-story__text {
+    justify-self: end;
+    width: 33%;
+    min-width: 22rem;
+  }
+}
+
+/* 3. Collage de deux photos décalées */
+.about-collage {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--grid-gap);
+}
+
+.about-collage__item {
+  position: relative;
+  overflow: hidden;
+  background: var(--color-surface);
+}
+
+.about-collage__item--1 {
+  aspect-ratio: 1;
+}
+
+.about-collage__item--2 {
+  aspect-ratio: 3 / 4;
+  margin-top: var(--space-16);
+}
+
+@media (min-width: 1024px) {
+  .about-collage {
+    grid-template-columns: 5fr 6fr;
+    gap: 0;
+  }
+
+  .about-collage__item--2 {
+    margin-top: var(--space-24);
+  }
+}
+
+/* 4. Nos engagements : titre à gauche, 3 cartes */
+.about-values {
+  display: grid;
+  gap: var(--space-10);
+}
+
+.about-values__label {
+  display: block;
+}
+
+.about-values__head {
+  display: grid;
+  gap: var(--space-4);
+  align-content: start;
+}
+
+.about-values__head p {
+  max-width: var(--qualities-text-w);
+}
+
+.about-values__cards {
+  display: grid;
+  gap: var(--grid-gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 768px) {
+  .about-values__cards {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .about-values {
+    grid-template-columns: 1fr 2fr;
+    align-items: start;
+  }
+}
+
+.value-card {
+  display: grid;
+  justify-items: center;
+  align-content: start;
+  gap: var(--space-3);
+  padding: var(--space-8) var(--space-5);
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  text-align: center;
+}
+
+.value-card__num {
+  font-size: var(--text-2xs);
+  letter-spacing: var(--tracking-eyebrow);
+  color: var(--color-ink-soft);
+}
+
+.value-card__title {
+  font-weight: var(--weight-bold);
+}
+
+.value-card__text {
+  font-size: var(--text-sm);
+  color: var(--color-ink-soft);
+}
+
+/* 5. Le service : grand titre en escalier, photo + liste */
+.about-service {
+  padding-block: var(--section-y);
+  background: var(--color-surface);
+}
+
+.about-service__title {
+  display: grid;
+  margin: 0 0 var(--space-12);
+  font-family: var(--font-display);
+  font-size: var(--about-service-title);
+  font-weight: var(--weight-bold);
+  line-height: var(--leading-display);
+  letter-spacing: var(--tracking-display);
+  text-transform: uppercase;
+}
+
+.about-service__title span {
+  padding-left: calc(var(--i, 0) * var(--about-service-indent));
+}
+
+.about-service__body {
+  display: grid;
+  gap: var(--space-10);
+}
+
+@media (min-width: 1024px) {
+  .about-service__body {
+    grid-template-columns: 2fr 3fr;
+    gap: var(--space-16);
+    align-items: center;
+  }
+}
+
+.about-service__media {
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border-radius: var(--radius-card);
+}
+
+.about-service__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.about-service__list {
+  display: grid;
+  gap: var(--space-6);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.about-service__list li {
+  display: grid;
+  grid-template-columns: var(--quality-icon) 1fr;
+  gap: var(--space-1) var(--space-5);
+  align-items: center;
+}
+
+.about-service__name {
+  font-weight: var(--weight-bold);
+}
+
+.about-service__text {
+  grid-column: 2;
+  color: var(--color-ink-soft);
+  font-size: var(--text-sm);
+}
+
+@media (min-width: 768px) {
+  .about-service__list li {
+    grid-template-columns: var(--quality-icon) 12rem 1fr;
+  }
+
+  .about-service__text {
+    grid-column: 3;
+  }
+}
+
+/* 6. Les fondatrices : grande photo, texte blanc par-dessus */
+.about-founders {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  min-height: var(--about-founders-h);
+  overflow: hidden;
+  color: var(--color-on-ink);
+}
+
+.about-founders__media {
+  position: absolute;
+  inset: 0;
+}
+
+.about-founders__media::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--color-hero-veil);
+}
+
+.about-founders__content {
+  position: relative;
+  display: grid;
+  gap: var(--space-10);
+  padding-block: var(--section-y);
+}
+
+@media (min-width: 1024px) {
+  .about-founders__content {
+    grid-template-columns: 1fr 1fr;
+    align-items: end;
+  }
+}
+
+.about-founders h2 {
+  color: var(--color-on-ink);
+}
+
+.about-founders__quote {
+  max-width: var(--measure-lead);
+  margin: 0;
+  font-size: var(--text-lg);
+  line-height: var(--leading-lead);
+}
+
+.about-founders__quote footer {
+  margin-top: var(--space-4);
+  font-size: var(--text-sm);
+  opacity: var(--opacity-soft);
+}
+
+/* 7. Avis */
+.about-reviews__title {
+  margin-bottom: var(--space-10);
+  font-size: var(--about-accent-size);
+  text-align: center;
+}
+
+/* 8. Suivez-nous : bande de photos qui défile en continu */
+.about-follow {
+  padding-block: var(--section-y) var(--section-y);
+  background: var(--color-surface);
+  overflow: hidden;
+}
+
+.about-follow__head h2 {
+  justify-items: center;
+  text-align: center;
+}
+
+.about-follow__head a {
+  text-decoration: none;
+}
+
+.marquee {
+  margin-block: var(--space-12);
+  overflow: hidden;
+}
+
+.marquee__track {
+  display: flex;
+  gap: var(--grid-gap);
+  width: max-content;
+  margin: 0;
+  padding: var(--space-6) 0;
+  list-style: none;
+  animation: marquee var(--marquee-duration) linear infinite;
+}
+
+.marquee:hover .marquee__track {
+  animation-play-state: paused;
+}
+
+.marquee__item {
+  width: var(--marquee-item-w);
+  overflow: hidden;
+  border-radius: var(--radius-card);
+}
+
+.marquee__item.is-low {
+  transform: translateY(var(--space-10));
+}
+
+.marquee__item img {
+  width: 100%;
+  height: auto;
+  transition: transform var(--dur-slow) var(--ease-out);
+}
+
+@media (hover: hover) {
+  .marquee__item:hover img {
+    transform: scale(var(--card-hover-scale));
+  }
+}
+
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee__track {
+    animation: none;
+  }
+}
+
+.about-follow__cta {
+  display: flex;
+  justify-content: center;
+}

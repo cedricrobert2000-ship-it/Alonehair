@@ -1021,6 +1021,46 @@ export type PageQuery = {
   >;
 };
 
+export type AboutPageQueryVariables = StorefrontAPI.Exact<{
+  country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
+  language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
+}>;
+
+export type AboutPageQuery = {
+  page?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.Page, 'title'> & {
+      seo?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Seo, 'title' | 'description'>
+      >;
+    }
+  >;
+  promises: {
+    nodes: Array<
+      Pick<StorefrontAPI.Metaobject, 'handle'> & {
+        fields: Array<Pick<StorefrontAPI.MetaobjectField, 'key' | 'value'>>;
+      }
+    >;
+  };
+  reviews: {
+    nodes: Array<
+      Pick<StorefrontAPI.Metaobject, 'id'> & {
+        fields: Array<Pick<StorefrontAPI.MetaobjectField, 'key' | 'value'>>;
+      }
+    >;
+  };
+  collection?: StorefrontAPI.Maybe<{
+    products: {
+      nodes: Array<
+        Pick<StorefrontAPI.Product, 'handle' | 'title'> & {
+          featuredImage?: StorefrontAPI.Maybe<
+            Pick<StorefrontAPI.Image, 'url' | 'altText' | 'width' | 'height'>
+          >;
+        }
+      >;
+    };
+  }>;
+};
+
 export type PolicyFragment = Pick<
   StorefrontAPI.ShopPolicy,
   'body' | 'handle' | 'id' | 'title' | 'url'
@@ -1961,6 +2001,10 @@ interface GeneratedQueryTypes {
   '#graphql\n  query Page(\n    $language: LanguageCode,\n    $country: CountryCode,\n    $handle: String!\n  )\n  @inContext(language: $language, country: $country) {\n    hero: metaobject(handle: {type: "home_hero", handle: "accueil"}) {\n      ...HeroFields\n    }\n    page(handle: $handle) {\n      handle\n      id\n      title\n      seo {\n        title\n        description\n      }\n      body\n      seo {\n        description\n        title\n      }\n    }\n  }\n  #graphql\n  fragment HeroFields on Metaobject {\n    fields {\n      key\n      value\n      reference {\n        __typename\n        ... on Video {\n          alt\n          previewImage {\n            url\n            width\n            height\n          }\n          sources {\n            url\n            mimeType\n            height\n            width\n          }\n        }\n      }\n    }\n  }\n\n': {
     return: PageQuery;
     variables: PageQueryVariables;
+  };
+  '#graphql\n  query AboutPage($country: CountryCode, $language: LanguageCode)\n  @inContext(country: $country, language: $language) {\n    page(handle: "a-propos") {\n      title\n      seo {\n        title\n        description\n      }\n    }\n    promises: metaobjects(type: "home_promise", first: 8) {\n      nodes {\n        handle\n        fields {\n          key\n          value\n        }\n      }\n    }\n    reviews: metaobjects(type: "home_review", first: 9) {\n      nodes {\n        id\n        fields {\n          key\n          value\n        }\n      }\n    }\n    collection(handle: "perruques") {\n      products(first: 12) {\n        nodes {\n          handle\n          title\n          featuredImage {\n            url\n            altText\n            width\n            height\n          }\n        }\n      }\n    }\n  }\n': {
+    return: AboutPageQuery;
+    variables: AboutPageQueryVariables;
   };
   '#graphql\n  fragment Policy on ShopPolicy {\n    body\n    handle\n    id\n    title\n    url\n  }\n  query Policy(\n    $country: CountryCode\n    $language: LanguageCode\n    $privacyPolicy: Boolean!\n    $refundPolicy: Boolean!\n    $shippingPolicy: Boolean!\n    $termsOfService: Boolean!\n  ) @inContext(language: $language, country: $country) {\n    shop {\n      privacyPolicy @include(if: $privacyPolicy) {\n        ...Policy\n      }\n      shippingPolicy @include(if: $shippingPolicy) {\n        ...Policy\n      }\n      termsOfService @include(if: $termsOfService) {\n        ...Policy\n      }\n      refundPolicy @include(if: $refundPolicy) {\n        ...Policy\n      }\n    }\n  }\n': {
     return: PolicyQuery;
