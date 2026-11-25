@@ -3,6 +3,7 @@ import {Suspense, useId} from 'react';
 import type {CartApiQueryFragment, FooterQuery, HeaderQuery} from 'storefrontapi.generated';
 import {Aside} from '~/components/Aside';
 import {Footer} from '~/components/Footer';
+import {FollowInstagram} from '~/components/FollowInstagram';
 import {Header, MobileMenu} from '~/components/Header';
 import {CartMain} from '~/components/CartMain';
 import {SEARCH_ENDPOINT, SearchFormPredictive} from '~/components/SearchFormPredictive';
@@ -44,6 +45,7 @@ export function PageLayout({
       <main id="contenu" tabIndex={-1}>
         {children}
       </main>
+      <FollowInstagram footer={footer} />
       <Footer footer={footer} header={header} publicStoreDomain={publicStoreDomain} />
     </Aside.Provider>
   );

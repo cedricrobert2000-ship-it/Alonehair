@@ -102,3 +102,14 @@ Fichiers : `app/styles/tokens.css` (toutes les valeurs) et `app/styles/ui.css` (
 
 Le hero de l'accueil suit **Organic Care** : vidéo plein écran sous un en-tête transparent (logo et menu en blanc), voile 30 %, petite phrase + lien souligné en bas à gauche, et **« ALONE HAIR » en texte géant, dans la police du site, ajusté à toute la largeur** (comme le mot « ORGANIC »). L'en-tête redevient blanc au scroll ou au survol.
 Les pages de contenu reprennent le « page hero » d'Organic Care : grand titre, puis la vidéo de marque dans un large cadre.
+
+## 6. Accueil (version de déploiement, 25/11/2026)
+
+Ordre : hero → bandeau défilant (faits produits + engagements Shopify) → collections →
+best-sellers en carrousel horizontal (glisser, flèches, barre de progression) →
+« La pièce signature » (1re perruque de `perruques`, mise en scène) → Notre histoire
+(façon Organic Care « Services ») → mosaïque de la collection indétectables 13×6 →
+bloc qualités → vidéos TikTok (si renseignées) → avis (si saisis).
+
+Sur **toutes les pages**, au-dessus du pied de page : « Suivez-nous @alone_hair » avec
+une bande de photos qui défile (photos d'ambiance du dépôt + photos des perruques).

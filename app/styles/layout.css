@@ -623,3 +623,106 @@ main:focus {
 .error-page .btn {
   margin-right: var(--space-6);
 }
+
+/* ------------------------------------------- Suivez-nous (toutes les pages) */
+.follow {
+  padding-block: var(--section-y) var(--space-8);
+  background: var(--color-surface);
+  overflow: hidden;
+}
+
+.follow__title {
+  display: grid;
+  justify-items: center;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--about-h2-size);
+  font-weight: var(--weight-bold);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-title);
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.follow__title .accent {
+  font-size: var(--about-accent-size);
+  line-height: var(--leading-tight);
+  text-decoration: none;
+}
+
+.follow__title .accent:hover {
+  text-decoration: underline;
+  text-decoration-thickness: var(--border-w);
+  text-underline-offset: var(--link-gap);
+}
+
+/* le pied de page colle à la bande */
+.follow + .site-footer {
+  margin-top: 0;
+}
+
+.marquee {
+  margin-top: var(--space-10);
+  overflow: hidden;
+}
+
+.marquee--placeholder {
+  height: var(--marquee-item-w);
+}
+
+.marquee__track {
+  display: flex;
+  gap: var(--grid-gap);
+  width: max-content;
+  margin: 0;
+  padding: 0 0 var(--space-12);
+  list-style: none;
+  animation: marquee var(--marquee-duration) linear infinite;
+}
+
+.marquee:hover .marquee__track,
+.marquee:focus-within .marquee__track {
+  animation-play-state: paused;
+}
+
+.marquee__item {
+  width: var(--marquee-item-w);
+  aspect-ratio: var(--card-ratio);
+  overflow: hidden;
+  border-radius: var(--radius-card);
+  background: var(--color-pill);
+}
+
+.marquee__item.is-low {
+  transform: translateY(var(--space-10));
+}
+
+.marquee__item a {
+  display: block;
+  height: 100%;
+}
+
+.marquee__item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--dur-slow) var(--ease-out);
+}
+
+@media (hover: hover) {
+  .marquee__item:hover img {
+    transform: scale(var(--card-hover-scale));
+  }
+}
+
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee__track {
+    animation: none;
+  }
+}

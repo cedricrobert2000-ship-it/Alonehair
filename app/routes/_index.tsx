@@ -17,6 +17,10 @@ import {FitText} from '~/components/ui/FitText';
 import {SITE_IMAGES} from '~/lib/site-images';
 import {SiteImg} from '~/components/ui/SiteImg';
 import {Qualities} from '~/components/home/Qualities';
+import {Ticker} from '~/components/home/Ticker';
+import {Spotlight} from '~/components/home/Spotlight';
+import {Mosaic} from '~/components/home/Mosaic';
+import {ProductCarousel} from '~/components/ui/ProductCarousel';
 import {toPath} from '~/lib/url';
 import {stripHtml} from '~/lib/seo';
 
@@ -73,24 +77,42 @@ const fieldOf = (fields: Fields | undefined, key: string) => fields?.find((f) =>
 
 export default function Homepage() {
   const data = useLoaderData<typeof loader>();
+  const promises = data.promises.nodes.flatMap((n) => {
+    const title = fieldOf(n.fields, 'title')?.value;
+    return title ? [{handle: n.handle, title, text: fieldOf(n.fields, 'text')?.value}] : [];
+  });
+  // Bandeau : faits produits (cheveux naturels, single donor, Raw Hair) + engagements Shopify
+  const ticker = Array.from(
+    new Set(['Cheveux 100 % naturels', 'Single donor', 'Raw Hair', ...promises.map((p) => p.title)]),
+  );
+  const spotlight = data.spotlight?.products.nodes[0];
+  const carousel = data.bestSellers.filter((p) => p.handle !== spotlight?.handle);
+  const mosaic = data.mosaic;
+
   return (
     <div className="home">
       <Hero data={data} />
-      <BestSellers products={data.bestSellers} />
-      <Story data={data} />
+      <Ticker items={ticker} />
       <Categories data={data} />
-      <TikTokWall data={data} />
+      <BestSellers products={carousel} />
+      <Spotlight product={spotlight} />
+      <Story data={data} />
+      {mosaic && (
+        <Mosaic
+          handle={mosaic.handle}
+          title={mosaic.title}
+          description={mosaic.description}
+          products={mosaic.products.nodes as ProductCardData[]}
+        />
+      )}
       <Qualities
-        qualities={data.promises.nodes.flatMap((n) => {
-          const title = fieldOf(n.fields, 'title')?.value;
-          return title ? [{handle: n.handle, title, text: fieldOf(n.fields, 'text')?.value}] : [];
-        })}
+        qualities={promises}
         siteImage={SITE_IMAGES.qualities}
         image={data.bestSellers[2]?.images.nodes[0] ?? data.bestSellers[0]?.images.nodes[0] ?? storyImage(data)}
         text={data.story ? fieldOf(data.story.fields, 'text')?.value : null}
       />
+      <TikTokWall data={data} />
       <Reviews data={data} />
-      <Instagram image={data.bestSellers[1]?.images.nodes[0] ?? null} />
     </div>
   );
 }
@@ -139,19 +161,13 @@ function Hero({data}: {data: Data}) {
 function BestSellers({products}: {products: ProductCardData[]}) {
   if (!products.length) return null;
   return (
-    <Section wide>
+    <Section wide className="bestsellers">
       <SectionHead
         eyebrow="Best-sellers"
         title="Les préférées de nos clientes"
         action={<TextLink to="/collections/perruques">Toutes les perruques</TextLink>}
       />
-      <ul className="product-grid" data-reveal-group>
-        {products.map((p, i) => (
-          <li key={p.id}>
-            <ProductCard product={p} loading={i < 4 ? 'eager' : 'lazy'} />
-          </li>
-        ))}
-      </ul>
+      <ProductCarousel products={products} label="Best-sellers" />
     </Section>
   );
 }
@@ -321,37 +337,6 @@ function Reviews({data}: {data: Data}) {
   );
 }
 
-/* -------------------------------------------------------------- Instagram */
-function Instagram({
-  image,
-}: {
-  image: {url: string; altText?: string | null; width?: number | null; height?: number | null} | null;
-}) {
-  return (
-    <section className="insta section" aria-labelledby="insta-title">
-      <div className="insta__inner container container--wide" data-reveal>
-        <div className="insta__media">
-          {SITE_IMAGES.instagram ? (
-            <SiteImg image={SITE_IMAGES.instagram} sizes="(min-width: 1024px) 50vw, 100vw" />
-          ) : (
-            image && <Image data={image} alt="" sizes="(min-width: 1024px) 50vw, 100vw" loading="lazy" aspectRatio="4/5" />
-          )}
-        </div>
-        <div className="insta__box">
-          <p className="eyebrow">Instagram</p>
-          <h2 className="h2" id="insta-title">
-            @alone_hair
-          </h2>
-          <p className="text-soft">
-            Nouveautés, essayages et conseils : suivez-nous, et écrivez-nous en message pour choisir votre perruque.
-          </p>
-          <TextLink href="https://www.instagram.com/alone_hair">Nous suivre</TextLink>
-        </div>
-      </div>
-    </section>
-  );
-}
-
 /* ---------------------------------------------------------------- Requête */
 const HOME_QUERY = `#graphql
   fragment HomeCategory on Collection {
@@ -428,7 +413,50 @@ const HOME_QUERY = `#graphql
       }
     }
     bestSellers: collection(handle: "perruques") {
-      products(first: 8) {
+      products(first: 9) {
+        nodes {
+          ...ProductCard
+        }
+      }
+    }
+    spotlight: collection(handle: "perruques") {
+      products(first: 1) {
+        nodes {
+          handle
+          title
+          descriptionHtml
+          images(first: 3) {
+            nodes {
+              url
+              altText
+              width
+              height
+            }
+          }
+          priceRange {
+            minVariantPrice {
+              amount
+              currencyCode
+            }
+            maxVariantPrice {
+              amount
+              currencyCode
+            }
+          }
+          options(first: 5) {
+            name
+            optionValues {
+              name
+            }
+          }
+        }
+      }
+    }
+    mosaic: collection(handle: "perruque-indetectable-13x6") {
+      handle
+      title
+      description
+      products(first: 3) {
         nodes {
           ...ProductCard
         }

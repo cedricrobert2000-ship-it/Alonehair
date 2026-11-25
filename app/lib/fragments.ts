@@ -260,5 +260,20 @@ export const FOOTER_QUERY = `#graphql
         ...FooterPolicy
       }
     }
+    # photos de la bande « Suivez-nous » (au-dessus du pied de page)
+    strip: collection(handle: "perruques") {
+      products(first: 10) {
+        nodes {
+          handle
+          title
+          featuredImage {
+            url
+            altText
+            width
+            height
+          }
+        }
+      }
+    }
   }
 ` as const;

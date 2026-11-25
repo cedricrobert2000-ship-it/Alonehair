@@ -431,6 +431,17 @@ export type FooterQuery = {
       Pick<StorefrontAPI.ShopPolicy, 'id' | 'title' | 'handle'>
     >;
   };
+  strip?: StorefrontAPI.Maybe<{
+    products: {
+      nodes: Array<
+        Pick<StorefrontAPI.Product, 'handle' | 'title'> & {
+          featuredImage?: StorefrontAPI.Maybe<
+            Pick<StorefrontAPI.Image, 'url' | 'altText' | 'width' | 'height'>
+          >;
+        }
+      >;
+    };
+  }>;
 };
 
 export type HeroFieldsFragment = {
@@ -609,6 +620,80 @@ export type HomeQuery = {
       >;
     };
   }>;
+  spotlight?: StorefrontAPI.Maybe<{
+    products: {
+      nodes: Array<
+        Pick<StorefrontAPI.Product, 'handle' | 'title' | 'descriptionHtml'> & {
+          images: {
+            nodes: Array<
+              Pick<StorefrontAPI.Image, 'url' | 'altText' | 'width' | 'height'>
+            >;
+          };
+          priceRange: {
+            minVariantPrice: Pick<
+              StorefrontAPI.MoneyV2,
+              'amount' | 'currencyCode'
+            >;
+            maxVariantPrice: Pick<
+              StorefrontAPI.MoneyV2,
+              'amount' | 'currencyCode'
+            >;
+          };
+          options: Array<
+            Pick<StorefrontAPI.ProductOption, 'name'> & {
+              optionValues: Array<
+                Pick<StorefrontAPI.ProductOptionValue, 'name'>
+              >;
+            }
+          >;
+        }
+      >;
+    };
+  }>;
+  mosaic?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.Collection, 'handle' | 'title' | 'description'> & {
+      products: {
+        nodes: Array<
+          Pick<
+            StorefrontAPI.Product,
+            'id' | 'handle' | 'title' | 'productType' | 'availableForSale'
+          > & {
+            images: {
+              nodes: Array<
+                Pick<
+                  StorefrontAPI.Image,
+                  'id' | 'url' | 'altText' | 'width' | 'height'
+                >
+              >;
+            };
+            priceRange: {
+              minVariantPrice: Pick<
+                StorefrontAPI.MoneyV2,
+                'amount' | 'currencyCode'
+              >;
+              maxVariantPrice: Pick<
+                StorefrontAPI.MoneyV2,
+                'amount' | 'currencyCode'
+              >;
+            };
+            compareAtPriceRange: {
+              minVariantPrice: Pick<
+                StorefrontAPI.MoneyV2,
+                'amount' | 'currencyCode'
+              >;
+            };
+            options: Array<
+              Pick<StorefrontAPI.ProductOption, 'name'> & {
+                optionValues: Array<
+                  Pick<StorefrontAPI.ProductOptionValue, 'name'>
+                >;
+              }
+            >;
+          }
+        >;
+      };
+    }
+  >;
   tiktok?: StorefrontAPI.Maybe<{
     products: {
       nodes: Array<
@@ -1048,17 +1133,6 @@ export type AboutPageQuery = {
       }
     >;
   };
-  collection?: StorefrontAPI.Maybe<{
-    products: {
-      nodes: Array<
-        Pick<StorefrontAPI.Product, 'handle' | 'title'> & {
-          featuredImage?: StorefrontAPI.Maybe<
-            Pick<StorefrontAPI.Image, 'url' | 'altText' | 'width' | 'height'>
-          >;
-        }
-      >;
-    };
-  }>;
 };
 
 export type PolicyFragment = Pick<
@@ -1966,11 +2040,11 @@ interface GeneratedQueryTypes {
     return: HeaderQuery;
     variables: HeaderQueryVariables;
   };
-  '#graphql\n  fragment FooterPolicy on ShopPolicy {\n    id\n    title\n    handle\n  }\n  query Footer($country: CountryCode, $language: LanguageCode)\n  @inContext(language: $language, country: $country) {\n    shop {\n      privacyPolicy {\n        ...FooterPolicy\n      }\n      refundPolicy {\n        ...FooterPolicy\n      }\n      shippingPolicy {\n        ...FooterPolicy\n      }\n      termsOfService {\n        ...FooterPolicy\n      }\n    }\n  }\n': {
+  '#graphql\n  fragment FooterPolicy on ShopPolicy {\n    id\n    title\n    handle\n  }\n  query Footer($country: CountryCode, $language: LanguageCode)\n  @inContext(language: $language, country: $country) {\n    shop {\n      privacyPolicy {\n        ...FooterPolicy\n      }\n      refundPolicy {\n        ...FooterPolicy\n      }\n      shippingPolicy {\n        ...FooterPolicy\n      }\n      termsOfService {\n        ...FooterPolicy\n      }\n    }\n    # photos de la bande « Suivez-nous » (au-dessus du pied de page)\n    strip: collection(handle: "perruques") {\n      products(first: 10) {\n        nodes {\n          handle\n          title\n          featuredImage {\n            url\n            altText\n            width\n            height\n          }\n        }\n      }\n    }\n  }\n': {
     return: FooterQuery;
     variables: FooterQueryVariables;
   };
-  '#graphql\n  fragment HomeCategory on Collection {\n    handle\n    title\n    image {\n      url\n      altText\n      width\n      height\n    }\n    products(first: 1) {\n      nodes {\n        featuredImage {\n          url\n          altText\n          width\n          height\n        }\n      }\n    }\n  }\n  query Home(\n    $country: CountryCode\n    $language: LanguageCode\n    $cat1: String!\n    $cat2: String!\n    $cat3: String!\n    $cat4: String!\n  ) @inContext(country: $country, language: $language) {\n    shop {\n      name\n      description\n      primaryDomain {\n        url\n      }\n    }\n    hero: metaobject(handle: {type: "home_hero", handle: "accueil"}) {\n      ...HeroFields\n    }\n    story: metaobject(handle: {type: "home_story", handle: "accueil"}) {\n      fields {\n        key\n        value\n        reference {\n          __typename\n          ... on MediaImage {\n            image {\n              url\n              altText\n              width\n              height\n            }\n          }\n        }\n      }\n    }\n    promises: metaobjects(type: "home_promise", first: 8) {\n      nodes {\n        handle\n        fields {\n          key\n          value\n        }\n      }\n    }\n    reviews: metaobjects(type: "home_review", first: 12) {\n      nodes {\n        id\n        fields {\n          key\n          value\n        }\n      }\n    }\n    bestSellers: collection(handle: "perruques") {\n      products(first: 8) {\n        nodes {\n          ...ProductCard\n        }\n      }\n    }\n    tiktok: collection(handle: "perruques") {\n      products(first: 40) {\n        nodes {\n          handle\n          title\n          featuredImage {\n            url\n            altText\n            width\n            height\n          }\n          tiktokUrl: metafield(namespace: "custom", key: "tiktok_url") {\n            value\n          }\n          tiktokViews: metafield(namespace: "custom", key: "tiktok_vues") {\n            value\n          }\n        }\n      }\n    }\n    cat1: collection(handle: $cat1) {\n      ...HomeCategory\n    }\n    cat2: collection(handle: $cat2) {\n      ...HomeCategory\n    }\n    cat3: collection(handle: $cat3) {\n      ...HomeCategory\n    }\n    cat4: collection(handle: $cat4) {\n      ...HomeCategory\n    }\n  }\n  #graphql\n  fragment ProductCardMoney on MoneyV2 {\n    amount\n    currencyCode\n  }\n  fragment ProductCard on Product {\n    id\n    handle\n    title\n    productType\n    availableForSale\n    images(first: 4) {\n      nodes {\n        id\n        url\n        altText\n        width\n        height\n      }\n    }\n    priceRange {\n      minVariantPrice {\n        ...ProductCardMoney\n      }\n      maxVariantPrice {\n        ...ProductCardMoney\n      }\n    }\n    compareAtPriceRange {\n      minVariantPrice {\n        ...ProductCardMoney\n      }\n    }\n    options(first: 5) {\n      name\n      optionValues {\n        name\n      }\n    }\n  }\n\n  #graphql\n  fragment HeroFields on Metaobject {\n    fields {\n      key\n      value\n      reference {\n        __typename\n        ... on Video {\n          alt\n          previewImage {\n            url\n            width\n            height\n          }\n          sources {\n            url\n            mimeType\n            height\n            width\n          }\n        }\n      }\n    }\n  }\n\n': {
+  '#graphql\n  fragment HomeCategory on Collection {\n    handle\n    title\n    image {\n      url\n      altText\n      width\n      height\n    }\n    products(first: 1) {\n      nodes {\n        featuredImage {\n          url\n          altText\n          width\n          height\n        }\n      }\n    }\n  }\n  query Home(\n    $country: CountryCode\n    $language: LanguageCode\n    $cat1: String!\n    $cat2: String!\n    $cat3: String!\n    $cat4: String!\n  ) @inContext(country: $country, language: $language) {\n    shop {\n      name\n      description\n      primaryDomain {\n        url\n      }\n    }\n    hero: metaobject(handle: {type: "home_hero", handle: "accueil"}) {\n      ...HeroFields\n    }\n    story: metaobject(handle: {type: "home_story", handle: "accueil"}) {\n      fields {\n        key\n        value\n        reference {\n          __typename\n          ... on MediaImage {\n            image {\n              url\n              altText\n              width\n              height\n            }\n          }\n        }\n      }\n    }\n    promises: metaobjects(type: "home_promise", first: 8) {\n      nodes {\n        handle\n        fields {\n          key\n          value\n        }\n      }\n    }\n    reviews: metaobjects(type: "home_review", first: 12) {\n      nodes {\n        id\n        fields {\n          key\n          value\n        }\n      }\n    }\n    bestSellers: collection(handle: "perruques") {\n      products(first: 9) {\n        nodes {\n          ...ProductCard\n        }\n      }\n    }\n    spotlight: collection(handle: "perruques") {\n      products(first: 1) {\n        nodes {\n          handle\n          title\n          descriptionHtml\n          images(first: 3) {\n            nodes {\n              url\n              altText\n              width\n              height\n            }\n          }\n          priceRange {\n            minVariantPrice {\n              amount\n              currencyCode\n            }\n            maxVariantPrice {\n              amount\n              currencyCode\n            }\n          }\n          options(first: 5) {\n            name\n            optionValues {\n              name\n            }\n          }\n        }\n      }\n    }\n    mosaic: collection(handle: "perruque-indetectable-13x6") {\n      handle\n      title\n      description\n      products(first: 3) {\n        nodes {\n          ...ProductCard\n        }\n      }\n    }\n    tiktok: collection(handle: "perruques") {\n      products(first: 40) {\n        nodes {\n          handle\n          title\n          featuredImage {\n            url\n            altText\n            width\n            height\n          }\n          tiktokUrl: metafield(namespace: "custom", key: "tiktok_url") {\n            value\n          }\n          tiktokViews: metafield(namespace: "custom", key: "tiktok_vues") {\n            value\n          }\n        }\n      }\n    }\n    cat1: collection(handle: $cat1) {\n      ...HomeCategory\n    }\n    cat2: collection(handle: $cat2) {\n      ...HomeCategory\n    }\n    cat3: collection(handle: $cat3) {\n      ...HomeCategory\n    }\n    cat4: collection(handle: $cat4) {\n      ...HomeCategory\n    }\n  }\n  #graphql\n  fragment ProductCardMoney on MoneyV2 {\n    amount\n    currencyCode\n  }\n  fragment ProductCard on Product {\n    id\n    handle\n    title\n    productType\n    availableForSale\n    images(first: 4) {\n      nodes {\n        id\n        url\n        altText\n        width\n        height\n      }\n    }\n    priceRange {\n      minVariantPrice {\n        ...ProductCardMoney\n      }\n      maxVariantPrice {\n        ...ProductCardMoney\n      }\n    }\n    compareAtPriceRange {\n      minVariantPrice {\n        ...ProductCardMoney\n      }\n    }\n    options(first: 5) {\n      name\n      optionValues {\n        name\n      }\n    }\n  }\n\n  #graphql\n  fragment HeroFields on Metaobject {\n    fields {\n      key\n      value\n      reference {\n        __typename\n        ... on Video {\n          alt\n          previewImage {\n            url\n            width\n            height\n          }\n          sources {\n            url\n            mimeType\n            height\n            width\n          }\n        }\n      }\n    }\n  }\n\n': {
     return: HomeQuery;
     variables: HomeQueryVariables;
   };
@@ -2002,7 +2076,7 @@ interface GeneratedQueryTypes {
     return: PageQuery;
     variables: PageQueryVariables;
   };
-  '#graphql\n  query AboutPage($country: CountryCode, $language: LanguageCode)\n  @inContext(country: $country, language: $language) {\n    page(handle: "a-propos") {\n      title\n      seo {\n        title\n        description\n      }\n    }\n    promises: metaobjects(type: "home_promise", first: 8) {\n      nodes {\n        handle\n        fields {\n          key\n          value\n        }\n      }\n    }\n    reviews: metaobjects(type: "home_review", first: 9) {\n      nodes {\n        id\n        fields {\n          key\n          value\n        }\n      }\n    }\n    collection(handle: "perruques") {\n      products(first: 12) {\n        nodes {\n          handle\n          title\n          featuredImage {\n            url\n            altText\n            width\n            height\n          }\n        }\n      }\n    }\n  }\n': {
+  '#graphql\n  query AboutPage($country: CountryCode, $language: LanguageCode)\n  @inContext(country: $country, language: $language) {\n    page(handle: "a-propos") {\n      title\n      seo {\n        title\n        description\n      }\n    }\n    promises: metaobjects(type: "home_promise", first: 8) {\n      nodes {\n        handle\n        fields {\n          key\n          value\n        }\n      }\n    }\n    reviews: metaobjects(type: "home_review", first: 9) {\n      nodes {\n        id\n        fields {\n          key\n          value\n        }\n      }\n    }\n  }\n': {
     return: AboutPageQuery;
     variables: AboutPageQueryVariables;
   };

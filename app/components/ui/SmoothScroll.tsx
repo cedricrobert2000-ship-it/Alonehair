@@ -36,7 +36,9 @@ export function SmoothScroll() {
         const rect = el.getBoundingClientRect();
         if (rect.bottom < -vh || rect.top > vh * 2) return;
         // -1 (élément sous l'écran) → 1 (au-dessus)
-        const progress = (vh / 2 - (rect.top + rect.height / 2)) / (vh / 2 + rect.height / 2);
+        const raw = (vh / 2 - (rect.top + rect.height / 2)) / (vh / 2 + rect.height / 2);
+        // borné : l'image (agrandie à 115 %) ne laisse jamais voir le fond
+        const progress = Math.max(-1, Math.min(1, raw));
         const amount = Number(el.dataset.parallax) || 0.1;
         el.style.setProperty('--parallax', `${(progress * amount * 100).toFixed(2)}%`);
       });

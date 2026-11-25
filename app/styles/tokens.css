@@ -248,6 +248,14 @@
   --marquee-item-w: clamp(140px, 16vw, 220px);
   --marquee-duration: 60s;
 
+  /* Accueil : bandeau, carrousel, pièce signature, mosaïque */
+  --ticker-size: clamp(1rem, 0.8rem + 0.8vw, 1.5rem); /* 16 → 24 */
+  --ticker-duration: 40s;
+  --carousel-card-w: clamp(240px, 24vw, 340px);
+  --carousel-progress-h: 2px;
+  --spotlight-title-size: clamp(2.25rem, 1.4rem + 3.4vw, 4.5rem); /* 36 → 72 */
+  --mosaic-title-size: clamp(1.75rem, 1.2rem + 2.2vw, 3.25rem); /* 28 → 52 */
+
   /* Collection */
   --plp-side-w: 240px;
 

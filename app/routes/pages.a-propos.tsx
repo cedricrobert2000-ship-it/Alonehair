@@ -1,9 +1,8 @@
-import {Link, useLoaderData} from 'react-router';
+import {useLoaderData} from 'react-router';
 import type {Route} from './+types/pages.a-propos';
 import {Image} from '@shopify/hydrogen';
 import {ABOUT} from '~/content/a-propos';
 import {breadcrumbLd, seoMeta} from '~/lib/seo';
-import {Button} from '~/components/ui';
 import aboutStyles from '~/styles/about.css?url';
 
 /**
@@ -50,14 +49,11 @@ export async function loader({context, request}: Route.LoaderArgs) {
         text: field(n, 'text'),
       }))
       .filter((r) => r.author && r.text),
-    strip: (data.collection?.products.nodes ?? []).flatMap((p) =>
-      p.featuredImage ? [{handle: p.handle, title: p.title, image: p.featuredImage}] : [],
-    ),
   };
 }
 
 export default function About() {
-  const {page, promises, reviews, strip} = useLoaderData<typeof loader>();
+  const {page, promises, reviews} = useLoaderData<typeof loader>();
   const {story, collage, commitments, service, founders} = ABOUT;
 
   return (
@@ -196,33 +192,6 @@ export default function About() {
         </section>
       )}
 
-      {/* 8. Instagram : bande de photos qui défile */}
-      <section className="about-follow" aria-labelledby="about-follow">
-        <div className="container about-follow__head" data-reveal>
-          <h2 id="about-follow">
-            <span className="about-values__label">Suivez-nous</span>
-            <a className="accent" href="https://www.instagram.com/alone_hair" target="_blank" rel="noopener noreferrer">
-              @alone_hair<span className="sr-only"> sur Instagram (nouvel onglet)</span>
-            </a>
-          </h2>
-        </div>
-        {strip.length > 0 && (
-          <div className="marquee" aria-label="Nos perruques">
-            <ul className="marquee__track">
-              {[...strip, ...strip].map((s, i) => (
-                <li key={`${s.handle}-${i}`} className={`marquee__item${i % 2 ? ' is-low' : ''}`} aria-hidden={i >= strip.length}>
-                  <Link to={`/products/${s.handle}`} tabIndex={i >= strip.length ? -1 : undefined} prefetch="intent">
-                    <Image data={s.image} alt={s.title} aspectRatio="3/4" width={220} sizes="220px" loading="lazy" />
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-        <div className="container about-follow__cta">
-          <Button to="/collections/perruques">Découvrir nos perruques</Button>
-        </div>
-      </section>
     </article>
   );
 }
@@ -263,20 +232,6 @@ const ABOUT_QUERY = `#graphql
         fields {
           key
           value
-        }
-      }
-    }
-    collection(handle: "perruques") {
-      products(first: 12) {
-        nodes {
-          handle
-          title
-          featuredImage {
-            url
-            altText
-            width
-            height
-          }
         }
       }
     }
