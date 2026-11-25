@@ -17,8 +17,8 @@ Langue du site et des réponses : **français**.
 4. **Conserver les URL actuelles** (voir §6). Le site est indexé sur Google et suivi dans la Search Console.
 5. **Pas d'avis clients, de notes ou de chiffres inventés.** Les avis viennent de métaobjets remplis par les propriétaires (§5). Ne rien afficher si c'est vide.
 6. Les promesses commerciales (livraison, retours) viennent des métaobjets, **jamais en dur**. La politique actuelle :
-   - livraison gratuite en France **à partir de 1 000 €** (8,80 € en dessous) ;
-   - **pas de remboursement pour simple changement d'avis** (voir la politique de remboursement Shopify).
+   - livraison **toujours payante** en France (8,80 €), retrait en boutique gratuit ;
+   - **aucun remboursement** : uniquement des **échanges sous 14 jours, selon le motif du retour**.
    Ne pas reprendre « Livraison offerte dès 50 € » ni « Satisfaite ou remboursée » de l'ancien thème.
 7. Avant de dire qu'une tâche est finie : lancer `npm run typecheck` et `npm run build`, et vérifier la page dans le navigateur (desktop **et** mobile 390 px).
 
@@ -63,7 +63,9 @@ S'inspirer de leur structure, de leurs espacements et de leurs interactions, **s
 - `Type de cheveux` : Raw Hair, Gros grain indien
 - `Type de lace` : 5x5 HD, 13x4 HD, 13x6 HD
 - `Longueur` : 10 pouces … 36 pouces
-- `Taille du bonnet` : S, M, L (perruques indétectables 13×6)
+- `Taille du bonnet` : S, M, L (perruques indétectables 13×6) ; les autres perruques ont un bonnet M unique réglable (S à L), à afficher en texte
+- `Couleur` : Naturel, Brun (bundles)
+- Option payante « Layers » (+49 €) : produit non listé `option-layers`, ajouté au panier avec la perruque si la cliente coche la case
 
 Chaque produit n'a qu'une partie de ces options : le sélecteur doit s'adapter, griser les combinaisons inexistantes ou épuisées, et mettre à jour le prix et l'URL (`?variant=`) à chaque choix.
 
@@ -88,7 +90,7 @@ Lire le menu `main-menu` via l'API (ne pas le coder en dur) : À propos · Nos c
 
 ## 5. Contenu éditable par les propriétaires (métaobjets)
 
-Les textes de la page d'accueil doivent être modifiables depuis l'admin Shopify, sans code. Définitions à **créer avec accord** (accès Storefront activé) :
+Les textes de la page d'accueil sont modifiables depuis l'admin Shopify (Contenu → Métaobjets), sans code. **Les définitions ci-dessous existent déjà**, avec l'accès Storefront activé et un premier contenu (hero `accueil`, 4 promesses, histoire `accueil`). Aucun avis n'est saisi pour l'instant : la section avis reste masquée.
 
 | Type | Champs |
 |---|---|
@@ -123,7 +125,7 @@ Ajouter pour chaque page : `<title>` et meta description venant du champ SEO Sho
 1. **Fiche produit** : galerie photos et vidéos (swipe sur mobile), sélecteur de variantes, prix, bouton d'ajout au panier fixé en bas sur mobile, onglets Description / Entretien / Livraison et retours, section TikTok, guide des tailles de bonnet, mention « Faite main, sur commande ».
 2. **Collection** : grille 2 colonnes sur mobile et 4 sur desktop, « à partir de » le prix minimum, filtres (type de cheveux, lace, longueur) si disponibles.
 3. **Accueil** : hero vidéo → catégories → best-sellers (8 premières perruques de `perruques`) → notre histoire → avis → promesses.
-4. **Panier** : tiroir latéral + page `/cart`, et seuil de livraison gratuite (1 000 €) affiché comme une barre de progression.
+4. **Panier** : tiroir latéral + page `/cart` (pas de barre de livraison gratuite : la livraison est toujours payante).
 5. **Pages de contenu** et politiques.
 6. **Recherche**, 404, en-tête et pied de page.
 
