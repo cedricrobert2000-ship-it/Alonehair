@@ -96,11 +96,11 @@ const COLORS = [
 ] as const;
 
 const TYPE = [
-  ['display', 'Manrope 500 · 48 → 110 px · −4,5 %', 'Designed to be rare'],
-  ['h1', 'Manrope 500 · 40 → 72 px', 'Perruques faites main'],
-  ['h2', 'Manrope 500 · 32 → 54 px', 'Les préférées de nos clientes'],
-  ['h3', 'Manrope 500 · 24 → 32 px', 'Notre histoire'],
-  ['h4', 'Manrope 500 · 20 → 24 px', 'Livraison et échanges'],
+  ['display', 'Inter Tight 500 · 48 → 110 px · −4,5 %', 'Designed to be rare'],
+  ['h1', 'Inter Tight 500 · 40 → 72 px', 'Perruques faites main'],
+  ['h2', 'Inter Tight 500 · 32 → 54 px', 'Les préférées de nos clientes'],
+  ['h3', 'Inter Tight 500 · 24 → 32 px', 'Notre histoire'],
+  ['h4', 'Inter Tight 500 · 20 → 24 px', 'Livraison et échanges'],
 ] as const;
 
 const SPACES = [
@@ -166,9 +166,9 @@ export default function Styleguide() {
 
       <SgSection id="typographie" n="02" title="Typographie">
         <p className="text-soft sg-note">
-          Titres en <strong>Manrope</strong> (la grotesque serrée de la
-          référence), texte et interface en <strong>Montserrat</strong> (charte
-          Alone Hair). Deux familles Google Fonts, quatre graisses au total.
+          Polices d&apos;Organic Care : texte et interface en <strong>Inter</strong>,
+          titres en <strong>Inter Tight</strong> (à la place de PP Mori, police
+          payante). Deux familles Google Fonts, quatre graisses au total.
         </p>
         <div className="sg-type">
           {TYPE.map(([cls, spec, sample]) => (
@@ -183,7 +183,7 @@ export default function Styleguide() {
           <div className="sg-type__row" data-reveal>
             <span className="sg-type__spec">
               <code>.lead</code>
-              <span className="text-soft">Montserrat 400 · 17 px</span>
+              <span className="text-soft">Inter 400 · 17 px</span>
             </span>
             <p className="lead">
               Des perruques en cheveux 100 % naturels, faites main, sur commande.
@@ -192,7 +192,7 @@ export default function Styleguide() {
           <div className="sg-type__row" data-reveal>
             <span className="sg-type__spec">
               <code>body</code>
-              <span className="text-soft">Montserrat 400 · 15 px · 1,65</span>
+              <span className="text-soft">Inter 400 · 15 px · 1,65</span>
             </span>
             <p className="prose">
               Chaque pièce est montée à la main à partir d&apos;un seul donneur.
@@ -207,7 +207,7 @@ export default function Styleguide() {
           <div className="sg-type__row" data-reveal>
             <span className="sg-type__spec">
               <code>.eyebrow</code>
-              <span className="text-soft">Montserrat 500 · 11 px · capitales · +22 %</span>
+              <span className="text-soft">Inter 500 · 11 px · capitales · +22 %</span>
             </span>
             <p className="eyebrow">Nos best-sellers</p>
           </div>
@@ -414,10 +414,10 @@ function HeroDemo({
   const field = (key: string) => hero?.fields.find((f) => f.key === key);
   const ctaLink = field('cta_link')?.value;
   const videoRef = field('video_desktop')?.reference;
-  const source =
+  const sources =
     videoRef?.__typename === 'Video'
-      ? videoRef.sources.find((s) => s.mimeType === 'video/mp4') ?? videoRef.sources[0]
-      : null;
+      ? videoRef.sources.filter((s) => s.mimeType === 'video/mp4').map((s) => ({url: s.url, height: 720}))
+      : [];
 
   return (
     <section className="sg-hero" aria-label="Exemple de hero">
@@ -430,13 +430,10 @@ function HeroDemo({
           to: ctaLink && ctaLink.startsWith('/') ? ctaLink : '/collections/perruques',
         }}
         video={
-          source
+          sources.length
             ? {
-                url: source.url,
-                poster:
-                  videoRef?.__typename === 'Video'
-                    ? videoRef.previewImage?.url
-                    : undefined,
+                sources,
+                poster: videoRef?.__typename === 'Video' ? videoRef.previewImage?.url : undefined,
               }
             : null
         }

@@ -433,6 +433,38 @@ export type FooterQuery = {
   };
 };
 
+export type HeroFieldsFragment = {
+  fields: Array<
+    Pick<StorefrontAPI.MetaobjectField, 'key' | 'value'> & {
+      reference?: StorefrontAPI.Maybe<
+        | {
+            __typename:
+              | 'Article'
+              | 'Collection'
+              | 'GenericFile'
+              | 'MediaImage'
+              | 'Metaobject'
+              | 'Model3d'
+              | 'Page'
+              | 'Product'
+              | 'ProductVariant';
+          }
+        | ({__typename: 'Video'} & Pick<StorefrontAPI.Video, 'alt'> & {
+              previewImage?: StorefrontAPI.Maybe<
+                Pick<StorefrontAPI.Image, 'url' | 'width' | 'height'>
+              >;
+              sources: Array<
+                Pick<
+                  StorefrontAPI.VideoSource,
+                  'url' | 'mimeType' | 'height' | 'width'
+                >
+              >;
+            })
+      >;
+    }
+  >;
+};
+
 export type HomeCategoryFragment = Pick<
   StorefrontAPI.Collection,
   'handle' | 'title'
@@ -478,14 +510,17 @@ export type HomeQuery = {
                 | 'Product'
                 | 'ProductVariant';
             }
-          | ({__typename: 'Video'} & {
-              previewImage?: StorefrontAPI.Maybe<
-                Pick<StorefrontAPI.Image, 'url'>
-              >;
-              sources: Array<
-                Pick<StorefrontAPI.VideoSource, 'url' | 'mimeType'>
-              >;
-            })
+          | ({__typename: 'Video'} & Pick<StorefrontAPI.Video, 'alt'> & {
+                previewImage?: StorefrontAPI.Maybe<
+                  Pick<StorefrontAPI.Image, 'url' | 'width' | 'height'>
+                >;
+                sources: Array<
+                  Pick<
+                    StorefrontAPI.VideoSource,
+                    'url' | 'mimeType' | 'height' | 'width'
+                  >
+                >;
+              })
         >;
       }
     >;
@@ -944,6 +979,37 @@ export type PageQueryVariables = StorefrontAPI.Exact<{
 }>;
 
 export type PageQuery = {
+  hero?: StorefrontAPI.Maybe<{
+    fields: Array<
+      Pick<StorefrontAPI.MetaobjectField, 'key' | 'value'> & {
+        reference?: StorefrontAPI.Maybe<
+          | {
+              __typename:
+                | 'Article'
+                | 'Collection'
+                | 'GenericFile'
+                | 'MediaImage'
+                | 'Metaobject'
+                | 'Model3d'
+                | 'Page'
+                | 'Product'
+                | 'ProductVariant';
+            }
+          | ({__typename: 'Video'} & Pick<StorefrontAPI.Video, 'alt'> & {
+                previewImage?: StorefrontAPI.Maybe<
+                  Pick<StorefrontAPI.Image, 'url' | 'width' | 'height'>
+                >;
+                sources: Array<
+                  Pick<
+                    StorefrontAPI.VideoSource,
+                    'url' | 'mimeType' | 'height' | 'width'
+                  >
+                >;
+              })
+        >;
+      }
+    >;
+  }>;
   page?: StorefrontAPI.Maybe<
     Pick<StorefrontAPI.Page, 'handle' | 'id' | 'title' | 'body'> & {
       seo?: StorefrontAPI.Maybe<
@@ -1862,7 +1928,7 @@ interface GeneratedQueryTypes {
     return: FooterQuery;
     variables: FooterQueryVariables;
   };
-  '#graphql\n  fragment HomeCategory on Collection {\n    handle\n    title\n    image {\n      url\n      altText\n      width\n      height\n    }\n    products(first: 1) {\n      nodes {\n        featuredImage {\n          url\n          altText\n          width\n          height\n        }\n      }\n    }\n  }\n  query Home(\n    $country: CountryCode\n    $language: LanguageCode\n    $cat1: String!\n    $cat2: String!\n    $cat3: String!\n    $cat4: String!\n  ) @inContext(country: $country, language: $language) {\n    shop {\n      name\n      description\n      primaryDomain {\n        url\n      }\n    }\n    hero: metaobject(handle: {type: "home_hero", handle: "accueil"}) {\n      fields {\n        key\n        value\n        reference {\n          __typename\n          ... on Video {\n            previewImage {\n              url\n            }\n            sources {\n              url\n              mimeType\n            }\n          }\n        }\n      }\n    }\n    story: metaobject(handle: {type: "home_story", handle: "accueil"}) {\n      fields {\n        key\n        value\n        reference {\n          __typename\n          ... on MediaImage {\n            image {\n              url\n              altText\n              width\n              height\n            }\n          }\n        }\n      }\n    }\n    promises: metaobjects(type: "home_promise", first: 8) {\n      nodes {\n        fields {\n          key\n          value\n        }\n      }\n    }\n    reviews: metaobjects(type: "home_review", first: 12) {\n      nodes {\n        id\n        fields {\n          key\n          value\n        }\n      }\n    }\n    bestSellers: collection(handle: "perruques") {\n      products(first: 8) {\n        nodes {\n          ...ProductCard\n        }\n      }\n    }\n    tiktok: collection(handle: "perruques") {\n      products(first: 40) {\n        nodes {\n          handle\n          title\n          featuredImage {\n            url\n            altText\n            width\n            height\n          }\n          tiktokUrl: metafield(namespace: "custom", key: "tiktok_url") {\n            value\n          }\n          tiktokViews: metafield(namespace: "custom", key: "tiktok_vues") {\n            value\n          }\n        }\n      }\n    }\n    cat1: collection(handle: $cat1) {\n      ...HomeCategory\n    }\n    cat2: collection(handle: $cat2) {\n      ...HomeCategory\n    }\n    cat3: collection(handle: $cat3) {\n      ...HomeCategory\n    }\n    cat4: collection(handle: $cat4) {\n      ...HomeCategory\n    }\n  }\n  #graphql\n  fragment ProductCardMoney on MoneyV2 {\n    amount\n    currencyCode\n  }\n  fragment ProductCard on Product {\n    id\n    handle\n    title\n    productType\n    availableForSale\n    images(first: 4) {\n      nodes {\n        id\n        url\n        altText\n        width\n        height\n      }\n    }\n    priceRange {\n      minVariantPrice {\n        ...ProductCardMoney\n      }\n      maxVariantPrice {\n        ...ProductCardMoney\n      }\n    }\n    compareAtPriceRange {\n      minVariantPrice {\n        ...ProductCardMoney\n      }\n    }\n    options(first: 5) {\n      name\n      optionValues {\n        name\n      }\n    }\n  }\n\n': {
+  '#graphql\n  fragment HomeCategory on Collection {\n    handle\n    title\n    image {\n      url\n      altText\n      width\n      height\n    }\n    products(first: 1) {\n      nodes {\n        featuredImage {\n          url\n          altText\n          width\n          height\n        }\n      }\n    }\n  }\n  query Home(\n    $country: CountryCode\n    $language: LanguageCode\n    $cat1: String!\n    $cat2: String!\n    $cat3: String!\n    $cat4: String!\n  ) @inContext(country: $country, language: $language) {\n    shop {\n      name\n      description\n      primaryDomain {\n        url\n      }\n    }\n    hero: metaobject(handle: {type: "home_hero", handle: "accueil"}) {\n      ...HeroFields\n    }\n    story: metaobject(handle: {type: "home_story", handle: "accueil"}) {\n      fields {\n        key\n        value\n        reference {\n          __typename\n          ... on MediaImage {\n            image {\n              url\n              altText\n              width\n              height\n            }\n          }\n        }\n      }\n    }\n    promises: metaobjects(type: "home_promise", first: 8) {\n      nodes {\n        fields {\n          key\n          value\n        }\n      }\n    }\n    reviews: metaobjects(type: "home_review", first: 12) {\n      nodes {\n        id\n        fields {\n          key\n          value\n        }\n      }\n    }\n    bestSellers: collection(handle: "perruques") {\n      products(first: 8) {\n        nodes {\n          ...ProductCard\n        }\n      }\n    }\n    tiktok: collection(handle: "perruques") {\n      products(first: 40) {\n        nodes {\n          handle\n          title\n          featuredImage {\n            url\n            altText\n            width\n            height\n          }\n          tiktokUrl: metafield(namespace: "custom", key: "tiktok_url") {\n            value\n          }\n          tiktokViews: metafield(namespace: "custom", key: "tiktok_vues") {\n            value\n          }\n        }\n      }\n    }\n    cat1: collection(handle: $cat1) {\n      ...HomeCategory\n    }\n    cat2: collection(handle: $cat2) {\n      ...HomeCategory\n    }\n    cat3: collection(handle: $cat3) {\n      ...HomeCategory\n    }\n    cat4: collection(handle: $cat4) {\n      ...HomeCategory\n    }\n  }\n  #graphql\n  fragment ProductCardMoney on MoneyV2 {\n    amount\n    currencyCode\n  }\n  fragment ProductCard on Product {\n    id\n    handle\n    title\n    productType\n    availableForSale\n    images(first: 4) {\n      nodes {\n        id\n        url\n        altText\n        width\n        height\n      }\n    }\n    priceRange {\n      minVariantPrice {\n        ...ProductCardMoney\n      }\n      maxVariantPrice {\n        ...ProductCardMoney\n      }\n    }\n    compareAtPriceRange {\n      minVariantPrice {\n        ...ProductCardMoney\n      }\n    }\n    options(first: 5) {\n      name\n      optionValues {\n        name\n      }\n    }\n  }\n\n  #graphql\n  fragment HeroFields on Metaobject {\n    fields {\n      key\n      value\n      reference {\n        __typename\n        ... on Video {\n          alt\n          previewImage {\n            url\n            width\n            height\n          }\n          sources {\n            url\n            mimeType\n            height\n            width\n          }\n        }\n      }\n    }\n  }\n\n': {
     return: HomeQuery;
     variables: HomeQueryVariables;
   };
@@ -1890,7 +1956,7 @@ interface GeneratedQueryTypes {
     return: CatalogQuery;
     variables: CatalogQueryVariables;
   };
-  '#graphql\n  query Page(\n    $language: LanguageCode,\n    $country: CountryCode,\n    $handle: String!\n  )\n  @inContext(language: $language, country: $country) {\n    page(handle: $handle) {\n      handle\n      id\n      title\n      seo {\n        title\n        description\n      }\n      body\n      seo {\n        description\n        title\n      }\n    }\n  }\n': {
+  '#graphql\n  query Page(\n    $language: LanguageCode,\n    $country: CountryCode,\n    $handle: String!\n  )\n  @inContext(language: $language, country: $country) {\n    hero: metaobject(handle: {type: "home_hero", handle: "accueil"}) {\n      ...HeroFields\n    }\n    page(handle: $handle) {\n      handle\n      id\n      title\n      seo {\n        title\n        description\n      }\n      body\n      seo {\n        description\n        title\n      }\n    }\n  }\n  #graphql\n  fragment HeroFields on Metaobject {\n    fields {\n      key\n      value\n      reference {\n        __typename\n        ... on Video {\n          alt\n          previewImage {\n            url\n            width\n            height\n          }\n          sources {\n            url\n            mimeType\n            height\n            width\n          }\n        }\n      }\n    }\n  }\n\n': {
     return: PageQuery;
     variables: PageQueryVariables;
   };

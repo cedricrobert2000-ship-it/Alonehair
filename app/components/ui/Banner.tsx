@@ -1,6 +1,7 @@
-import {useEffect, useRef, useState} from 'react';
 import {Image} from '@shopify/hydrogen';
 import {TextLink} from './TextLink';
+import {BrandVideo} from './BrandVideo';
+import type {HeroVideo} from '~/lib/hero';
 
 type BannerImage = {
   url: string;
@@ -30,35 +31,11 @@ export function Banner({
   title: string;
   cta?: {label: string; to: string};
   image?: BannerImage | null;
-  video?: {url: string; poster?: string} | null;
+  video?: HeroVideo | null;
   veil?: boolean;
   animated?: boolean;
   as?: 'h1' | 'h2' | 'p';
 }) {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const [playing, setPlaying] = useState(true);
-
-  useEffect(() => {
-    const v = videoRef.current;
-    if (!v) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      v.pause();
-      setPlaying(false);
-    }
-  }, []);
-
-  const toggle = () => {
-    const v = videoRef.current;
-    if (!v) return;
-    if (v.paused) {
-      void v.play();
-      setPlaying(true);
-    } else {
-      v.pause();
-      setPlaying(false);
-    }
-  };
-
   return (
     <div
       className={['banner', !veil && 'banner--plain', animated && 'is-animated']
@@ -67,17 +44,7 @@ export function Banner({
     >
       <div className="banner__media">
         {video ? (
-          <video
-            ref={videoRef}
-            src={video.url}
-            poster={video.poster}
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="metadata"
-            aria-hidden="true"
-          />
+          <BrandVideo video={video} controlClassName="banner__pause" />
         ) : image ? (
           <Image
             data={image}
@@ -89,16 +56,6 @@ export function Banner({
         ) : null}
       </div>
 
-      {video && (
-        <button
-          type="button"
-          className="icon-btn banner__pause"
-          aria-label={playing ? 'Mettre la vidéo en pause' : 'Lire la vidéo'}
-          onClick={toggle}
-        >
-          <span aria-hidden="true">{playing ? '❚❚' : '▶'}</span>
-        </button>
-      )}
 
       <div className="banner__box">
         <div className="banner__titles">

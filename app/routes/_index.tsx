@@ -2,7 +2,6 @@ import {Link, useLoaderData} from 'react-router';
 import type {Route} from './+types/_index';
 import {Image} from '@shopify/hydrogen';
 import {
-  Banner,
   PRODUCT_CARD_FRAGMENT,
   ProductCard,
   Section,
@@ -11,6 +10,8 @@ import {
   type ProductCardData,
 } from '~/components/ui';
 import {seoMeta} from '~/lib/seo';
+import {HERO_FIELDS_FRAGMENT, parseHero} from '~/lib/hero';
+import {BrandVideo} from '~/components/ui/BrandVideo';
 import {toPath} from '~/lib/url';
 import {stripHtml} from '~/lib/seo';
 
@@ -52,6 +53,7 @@ export async function loader({context, request}: Route.LoaderArgs) {
   const bestSellers = (data.bestSellers?.products.nodes ?? []) as ProductCardData[];
   return {
     ...data,
+    heroContent: parseHero(data.hero),
     bestSellers,
     origin,
     url: `${origin}/`,
@@ -61,7 +63,7 @@ export async function loader({context, request}: Route.LoaderArgs) {
 }
 
 type Data = Awaited<ReturnType<typeof loader>>;
-type Fields = Array<{key: string; value?: string | null; reference?: unknown}>;
+type Fields = Array<{key: string; value?: string | null}>;
 const fieldOf = (fields: Fields | undefined, key: string) => fields?.find((f) => f.key === key);
 
 export default function Homepage() {
@@ -81,32 +83,38 @@ export default function Homepage() {
 }
 
 /* ------------------------------------------------------------------ Hero */
+/**
+ * Hero façon Organic Care : vidéo plein écran sous l'en-tête transparent,
+ * phrase + lien en bas à gauche, logo Alone Hair géant sur toute la largeur.
+ */
 function Hero({data}: {data: Data}) {
-  const fields = data.hero?.fields;
-  const title = fieldOf(fields, 'subtitle')?.value;
-  if (!data.hero || !title) return null;
-  const eyebrow = fieldOf(fields, 'title')?.value ?? undefined;
-  const ctaLabel = fieldOf(fields, 'cta_label')?.value;
-  const ctaLink = fieldOf(fields, 'cta_link')?.value;
-  const ref = data.hero.fields.find((f) => f.key === 'video_desktop')?.reference;
-  const video =
-    ref?.__typename === 'Video'
-      ? {
-          url: (ref.sources.find((s) => s.mimeType === 'video/mp4') ?? ref.sources[0])?.url,
-          poster: ref.previewImage?.url,
-        }
-      : null;
+  const hero = data.heroContent;
+  if (!hero) return null;
+  const poster = data.bestSellers[0]?.images.nodes[0];
 
   return (
-    <section className="home-hero" aria-label="À la une">
-      <Banner
-        eyebrow={eyebrow}
-        title={title}
-        as="h1"
-        video={video?.url ? {url: video.url, poster: video.poster} : null}
-        image={data.bestSellers[0]?.images.nodes[0] ?? null}
-        cta={ctaLabel && ctaLink ? {label: ctaLabel, to: toPath(ctaLink, data.domains)} : undefined}
-      />
+    <section className="hero" aria-label="À la une">
+      <div className="hero__media">
+        {hero.video ? (
+          <BrandVideo video={hero.video} videoMobile={hero.videoMobile} className="hero__video" controlClassName="hero__toggle" />
+        ) : poster ? (
+          <Image data={poster} alt="" sizes="100vw" loading="eager" fetchPriority="high" className="hero__video" />
+        ) : null}
+      </div>
+      <div className="hero__content container container--wide">
+        <div className="hero__text">
+          {hero.subtitle && <p className="hero__lead">{hero.subtitle}</p>}
+          {hero.ctaLabel && hero.ctaLink && (
+            <Link className="hero__cta" to={toPath(hero.ctaLink, data.domains)} prefetch="intent">
+              {hero.ctaLabel}
+            </Link>
+          )}
+        </div>
+        <h1 className="hero__brand">
+          <span className="sr-only">{hero.title ?? data.shop.name}</span>
+          <img src="/brand/logo-alone-hair.png" alt="" width={779} height={68} fetchPriority="high" />
+        </h1>
+      </div>
     </section>
   );
 }
@@ -352,22 +360,7 @@ const HOME_QUERY = `#graphql
       }
     }
     hero: metaobject(handle: {type: "home_hero", handle: "accueil"}) {
-      fields {
-        key
-        value
-        reference {
-          __typename
-          ... on Video {
-            previewImage {
-              url
-            }
-            sources {
-              url
-              mimeType
-            }
-          }
-        }
-      }
+      ...HeroFields
     }
     story: metaobject(handle: {type: "home_story", handle: "accueil"}) {
       fields {
@@ -444,4 +437,5 @@ const HOME_QUERY = `#graphql
     }
   }
   ${PRODUCT_CARD_FRAGMENT}
+  ${HERO_FIELDS_FRAGMENT}
 ` as const;

@@ -3,6 +3,8 @@ import type {Route} from './+types/pages.$handle';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {Accordion, Button, TextLink} from '~/components/ui';
 import {seoMeta, stripHtml} from '~/lib/seo';
+import {HERO_FIELDS_FRAGMENT, parseHero} from '~/lib/hero';
+import {BrandVideo} from '~/components/ui/BrandVideo';
 
 export const meta: Route.MetaFunction = ({data}) =>
   data
@@ -32,7 +34,7 @@ async function loadCriticalData({context, request, params}: Route.LoaderArgs) {
     throw new Error('Missing page handle');
   }
 
-  const [{page}] = await Promise.all([
+  const [{page, hero}] = await Promise.all([
     context.storefront.query(PAGE_QUERY, {
       variables: {
         handle: params.handle,
@@ -48,7 +50,7 @@ async function loadCriticalData({context, request, params}: Route.LoaderArgs) {
   redirectIfHandleIsLocalized(request, {handle: params.handle, data: page});
 
   const url = new URL(request.url);
-  return {page, url: `${url.origin}/pages/${page.handle}`};
+  return {page, hero: parseHero(hero), url: `${url.origin}/pages/${page.handle}`};
 }
 
 /**
@@ -75,7 +77,7 @@ function toQuestions(html: string) {
 }
 
 export default function Page() {
-  const {page} = useLoaderData<typeof loader>();
+  const {page, hero} = useLoaderData<typeof loader>();
   const isFaq = page.handle === 'faq';
   const faq = isFaq ? toQuestions(page.body) : null;
   const hasBody = stripHtml(page.body).length > 0;
@@ -86,6 +88,14 @@ export default function Page() {
         <p className="eyebrow">Alone Hair</p>
         <h1 className="display">{page.title}</h1>
       </header>
+
+      {hero?.video && (
+        <div className="page-hero container container--wide" data-reveal>
+          <div className="page-hero__frame">
+            <BrandVideo video={hero.video} videoMobile={hero.videoMobile} className="page-hero__video" controlClassName="page-hero__toggle" />
+          </div>
+        </div>
+      )}
 
       <div className="container content-page__body">
         {faq && faq.items.length > 0 ? (
@@ -138,6 +148,9 @@ const PAGE_QUERY = `#graphql
     $handle: String!
   )
   @inContext(language: $language, country: $country) {
+    hero: metaobject(handle: {type: "home_hero", handle: "accueil"}) {
+      ...HeroFields
+    }
     page(handle: $handle) {
       handle
       id
@@ -153,4 +166,5 @@ const PAGE_QUERY = `#graphql
       }
     }
   }
+  ${HERO_FIELDS_FRAGMENT}
 ` as const;

@@ -178,6 +178,33 @@ main:focus {
   font-weight: var(--weight-medium);
 }
 
+/* En-tête transparent au-dessus du hero (accueil) ; redevient blanc au
+   scroll, au survol, ou quand un sous-menu / le clavier est dedans */
+.site-header.is-overlay:not(.is-scrolled):not(:hover):not(:focus-within) {
+  background: transparent;
+  color: var(--color-on-ink);
+}
+
+.site-header.is-overlay:not(.is-scrolled):not(:hover):not(:focus-within) .navlink {
+  color: var(--color-on-ink);
+}
+
+.site-header.is-overlay:not(.is-scrolled):not(:hover):not(:focus-within) .site-logo img {
+  filter: invert(1);
+}
+
+.site-header.is-overlay:not(.is-scrolled):not(:hover):not(:focus-within) .cart-count {
+  background: var(--color-bg);
+  color: var(--color-ink);
+}
+
+.site-header {
+  transition:
+    background-color var(--dur-base) var(--ease-out),
+    color var(--dur-base) var(--ease-out),
+    border-color var(--dur-base) var(--ease-out);
+}
+
 @media (max-width: 1023px) {
   .site-header__inner {
     grid-template-columns: auto 1fr auto;

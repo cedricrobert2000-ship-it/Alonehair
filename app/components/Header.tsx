@@ -24,6 +24,8 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}: HeaderProp
   const {shop, menu} = header;
   const domains = [shop.primaryDomain?.url, publicStoreDomain];
   const [scrolled, setScrolled] = useState(false);
+  // Sur l'accueil, l'en-tête est transparent au-dessus de la vidéo (Organic Care)
+  const overlay = useLocation().pathname === '/';
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -33,7 +35,7 @@ export function Header({header, isLoggedIn, cart, publicStoreDomain}: HeaderProp
   }, []);
 
   return (
-    <header className={`site-header${scrolled ? ' is-scrolled' : ''}`}>
+    <header className={`site-header${scrolled ? ' is-scrolled' : ''}${overlay ? ' is-overlay' : ''}`}>
       <div className="site-header__inner container container--wide">
         <MobileMenuToggle />
         <Link className="site-logo" to="/" prefetch="intent" aria-label={`${shop.name}, accueil`}>

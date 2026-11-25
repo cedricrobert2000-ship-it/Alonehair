@@ -12,7 +12,6 @@ import {
 } from 'react-router';
 import type {Route} from './+types/root';
 import {FOOTER_QUERY, HEADER_QUERY} from '~/lib/fragments';
-import resetStyles from '~/styles/reset.css?url';
 import tokenStyles from '~/styles/tokens.css?url';
 import uiStyles from '~/styles/ui.css?url';
 import layoutStyles from '~/styles/layout.css?url';
@@ -68,7 +67,7 @@ export function links() {
     {rel: 'preconnect', href: 'https://fonts.gstatic.com', crossOrigin: 'anonymous'},
     {
       rel: 'stylesheet',
-      href: 'https://fonts.googleapis.com/css2?family=Manrope:wght@500;600&family=Montserrat:wght@400;500&display=swap',
+      href: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Inter+Tight:wght@500;600&display=swap',
     },
     {rel: 'icon', type: 'image/png', href: '/brand/favicon.png'},
   ];
@@ -163,7 +162,6 @@ export function Layout({children}: {children?: React.ReactNode}) {
               "var d=document.documentElement;d.classList.add('js');setTimeout(function(){if(!window.__ahReveal)d.classList.add('reveal-off')},4000);",
           }}
         />
-        <link rel="stylesheet" href={resetStyles}></link>
         <link rel="stylesheet" href={tokenStyles}></link>
         <link rel="stylesheet" href={uiStyles}></link>
         <link rel="stylesheet" href={layoutStyles}></link>

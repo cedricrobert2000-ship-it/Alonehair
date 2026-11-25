@@ -20,6 +20,7 @@ html {
 }
 
 body {
+  margin: 0;
   font-family: var(--font-body);
   font-size: var(--text-base);
   font-weight: var(--weight-regular);
@@ -37,6 +38,23 @@ video {
 
 a {
   color: inherit;
+}
+
+h1,
+h2,
+h3,
+h4,
+p,
+figure,
+blockquote {
+  margin: 0;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
 }
 
 :focus-visible {

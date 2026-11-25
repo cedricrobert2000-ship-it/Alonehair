@@ -22,7 +22,7 @@ Captures : `references/` (desktop 1440 px et mobile 390 px, prises écran par é
 - Liens de menu : **les lettres roulent une à une** au survol (chaque lettre monte et laisse place à son double, 350 ms, 10 ms entre deux lettres).
 - **Adaptation** : logo ALONE HAIR à gauche, menu `main-menu` en majuscules espacées (charte), recherche/compte/panier à droite. Barre utilitaire = bandeau d'annonce (métaobjet). Compact au scroll. *(Prompt 1)*
 
-### Hero
+### Hero (remplacé le 25/11/2026 par le hero Organic Care, voir plus bas)
 - Photo plein cadre, **encart blanc en bas à gauche** avec titre sur deux lignes (2ᵉ ligne grise) et lien souligné « Shop Now ».
 - Entrée : la photo passe de 120 % à 100 % en fondu, l'encart monte depuis le bas (décalé de 0,3 s).
 - **Adaptation** : vidéo du métaobjet `home_hero` (desktop/mobile) avec voile 30 %, encart « ALONE HAIR / Designed to be rare ». Sur mobile, l'encart passe sous la vidéo pour ne rien cacher du visage. Bouton pause (accessibilité). → composant `Banner`.
@@ -69,8 +69,8 @@ Pas de GSAP : tout est en CSS + un seul IntersectionObserver (performance mobile
 Fichiers : `app/styles/tokens.css` (toutes les valeurs) et `app/styles/ui.css` (composants, **aucune valeur brute**). Démonstration vivante : **`/styleguide`**.
 
 - **Couleurs** : noir `#0C0C0C`, blanc, gris de texte = noir 65 %, filets noir 12 %, fonds de bloc `#F7F7F7`, pastilles `#EDEDED`. Aucun accent d'interface.
-- **Typographie** : titres **Manrope 500** (la grotesque serrée de Veloraskin, interlettrage négatif), texte et interface **Montserrat 400/500** (charte). Échelle fluide 390 → 1440 px : display 48→110, h1 40→72, h2 32→54, h3 24→32, h4 20→24, texte 15, petit 13, boutons 12, sur-titres 11.
-  - ⚠️ CLAUDE.md prévoyait Montserrat partout ; le Prompt 0 demandait « une police titre + Montserrat ». Manrope est proposée pour coller à la référence : **à valider**.
+- **Typographie** (validée le 25/11/2026 : « la même que sur Organic Care ») : texte et interface **Inter 400/500**, titres **Inter Tight 500/600** (remplace PP Mori, police payante d'Organic Care). Échelle fluide 390 → 1440 px : display 48→110, h1 40→72, h2 32→54, h3 24→32, h4 20→24, texte 15, petit 13, boutons 12, sur-titres 11.
+  - Si la licence PP Mori est achetée : fichiers dans `public/fonts`, `@font-face`, puis changer `--font-display`.
 - **Espacements** : base 4 (4 → 128 px), sections 64 → 120 px, gouttières 16 → 80 px (éditorial, 1220 px) et 16 → 24 px (grilles et médias, 1440 px).
 - **Formes** : angles droits partout. Ombre uniquement sur les tiroirs.
 - **Mouvement** : 200 ms (couleurs), 350 ms (lettres), 500 ms (apparitions, tiroirs), 900 ms (zoom photos), courbe ≈ power2.out.
@@ -94,7 +94,12 @@ Fichiers : `app/styles/tokens.css` (toutes les valeurs) et `app/styles/ui.css` (
 | `RevealObserver` | apparitions au scroll, filet de sécurité si le JS échoue |
 
 ## 4. Points à valider par les propriétaires
-1. Police des titres : Manrope (proposée) ou Montserrat partout.
+1. ~~Police des titres~~ : réglé, polices d'Organic Care (Inter / Inter Tight).
 2. Format des cartes : 3:4 portrait (proposé) ou 4:5 comme Veloraskin.
 3. Encart du hero : blanc façon Veloraskin (proposé) ou texte blanc directement sur la vidéo (site actuel).
 4. Sections Veloraskin écartées : favoris, avant/après, chiffres clients, livraison offerte.
+
+## 5. Hero (décision du 25/11/2026)
+
+Le hero de l'accueil suit **Organic Care** : vidéo plein écran sous un en-tête transparent (logo et menu en blanc), voile 30 %, petite phrase + lien souligné en bas à gauche, et le **logo Alone Hair en très grand sur toute la largeur** (à la place du mot géant « ORGANIC »). L'en-tête redevient blanc au scroll ou au survol.
+Les pages de contenu reprennent le « page hero » d'Organic Care : grand titre, puis la vidéo de marque dans un large cadre.
