@@ -1,0 +1,260 @@
+/* Mise en forme propre à la page /styleguide (pas utilisée ailleurs). */
+
+.sg-intro {
+  display: grid;
+  gap: var(--space-6);
+  padding-top: var(--space-16);
+}
+
+.sg-logo {
+  width: min(240px, 60vw);
+  height: auto;
+  margin-bottom: var(--space-8);
+}
+
+.sg-section + .sg-section {
+  border-top: 1px solid var(--color-line);
+}
+
+.sg-note {
+  margin-top: var(--space-6);
+  max-width: 70ch;
+  font-size: var(--text-sm);
+}
+
+.sg code {
+  justify-self: start;
+  padding: 0;
+  background: none;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
+  color: var(--color-ink);
+}
+
+.sg-hero .sg-note {
+  margin-inline: auto;
+}
+
+/* Couleurs */
+.sg-colors {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-8) var(--grid-gap);
+}
+
+@media (min-width: 1024px) {
+  .sg-colors {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.sg-colors li {
+  display: grid;
+  gap: 2px;
+  font-size: var(--text-sm);
+}
+
+.sg-swatch {
+  aspect-ratio: 4 / 3;
+  margin-bottom: var(--space-3);
+  border: 1px solid var(--color-line);
+}
+
+/* Typographie */
+.sg-type__row {
+  display: grid;
+  gap: var(--space-3);
+  padding-block: var(--space-8);
+  border-bottom: 1px solid var(--color-line);
+}
+
+@media (min-width: 1024px) {
+  .sg-type__row {
+    grid-template-columns: 260px 1fr;
+    align-items: baseline;
+    gap: var(--space-10);
+  }
+}
+
+.sg-type__spec {
+  display: grid;
+  gap: 2px;
+  font-size: var(--text-sm);
+}
+
+/* Espacements */
+.sg-spaces,
+.sg-motion {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-3);
+}
+
+.sg-spaces li,
+.sg-motion li {
+  display: grid;
+  grid-template-columns: 110px auto 1fr;
+  align-items: center;
+  gap: var(--space-4);
+  font-size: var(--text-sm);
+}
+
+.sg-motion li {
+  grid-template-columns: 110px 100px 1fr;
+  padding-block: var(--space-3);
+  border-bottom: 1px solid var(--color-line);
+}
+
+.sg-space-bar {
+  height: 12px;
+  background: var(--color-ink);
+}
+
+/* Boutons */
+.sg-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-6);
+  margin-bottom: var(--space-6);
+}
+
+.sg-onphoto {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-8);
+  padding: var(--space-12) var(--space-8);
+  background: linear-gradient(135deg, #3a2a20, #8a6a52);
+}
+
+/* Champs */
+.sg-form {
+  display: grid;
+  gap: var(--space-6);
+  max-width: 520px;
+}
+
+/* Variantes */
+.sg-variant {
+  display: grid;
+  gap: var(--space-8);
+}
+
+@media (min-width: 1024px) {
+  .sg-variant {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: var(--space-16);
+    align-items: start;
+  }
+}
+
+.sg-variant__media {
+  background: var(--color-surface);
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+}
+
+.sg-variant__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.sg-variant__info {
+  display: grid;
+  gap: var(--space-6);
+}
+
+.sg-variant__switch {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  padding-bottom: var(--space-6);
+  border-bottom: 1px solid var(--color-line);
+}
+
+.sg-variant__price {
+  margin: 0;
+  font-size: var(--text-lg);
+}
+
+.sg-variant__price s {
+  margin-right: var(--space-2);
+  color: var(--color-ink-mute);
+}
+
+/* Accordéons */
+.sg-acc {
+  max-width: 640px;
+  margin-bottom: var(--space-8);
+}
+
+/* Logo */
+.sg-logos {
+  display: grid;
+  gap: var(--grid-gap);
+}
+
+@media (min-width: 768px) {
+  .sg-logos {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.sg-logos > div {
+  display: grid;
+  place-items: center;
+  padding: var(--space-16) var(--space-8);
+  border: 1px solid var(--color-line);
+}
+
+.sg-logos img {
+  width: min(280px, 100%);
+  height: auto;
+}
+
+.sg-logos .is-dark {
+  background: var(--color-ink);
+  border-color: var(--color-ink);
+}
+
+.sg-logos .is-dark img {
+  filter: invert(1);
+}
+
+.sg-subhead {
+  margin: var(--space-12) 0 var(--space-4);
+}
+
+.sg-variant__price {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.sg-components {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.sg-components li {
+  display: grid;
+  gap: var(--space-1);
+  padding-block: var(--space-4);
+  border-bottom: var(--border-w) solid var(--color-line);
+  font-size: var(--text-sm);
+}
+
+@media (min-width: 1024px) {
+  .sg-components li {
+    grid-template-columns: 360px 1fr;
+    gap: var(--space-10);
+  }
+}

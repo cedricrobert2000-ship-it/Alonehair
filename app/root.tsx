@@ -11,10 +11,12 @@ import {
   useRouteLoaderData,
 } from 'react-router';
 import type {Route} from './+types/root';
-import favicon from '~/assets/favicon.svg';
 import {FOOTER_QUERY, HEADER_QUERY} from '~/lib/fragments';
 import resetStyles from '~/styles/reset.css?url';
 import appStyles from '~/styles/app.css?url';
+import tokenStyles from '~/styles/tokens.css?url';
+import uiStyles from '~/styles/ui.css?url';
+import {RevealObserver} from '~/components/ui/Reveal';
 import {PageLayout} from './components/PageLayout';
 
 export type RootLoader = typeof loader;
@@ -61,7 +63,13 @@ export function links() {
       rel: 'preconnect',
       href: 'https://shop.app',
     },
-    {rel: 'icon', type: 'image/svg+xml', href: favicon},
+    {rel: 'preconnect', href: 'https://fonts.googleapis.com'},
+    {rel: 'preconnect', href: 'https://fonts.gstatic.com', crossOrigin: 'anonymous'},
+    {
+      rel: 'stylesheet',
+      href: 'https://fonts.googleapis.com/css2?family=Manrope:wght@500;600&family=Montserrat:wght@400;500&display=swap',
+    },
+    {rel: 'icon', type: 'image/png', href: '/brand/favicon.png'},
   ];
 }
 
@@ -145,12 +153,24 @@ export function Layout({children}: {children?: React.ReactNode}) {
   const nonce = useNonce();
 
   return (
-    <html lang="en">
+    <html lang="fr" suppressHydrationWarning>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
+        {/* Active les animations d'apparition uniquement si le JS tourne ;
+            filet de sécurité : tout s'affiche après 3 s si l'hydratation échoue. */}
+        <script
+          nonce={nonce}
+          suppressHydrationWarning
+          dangerouslySetInnerHTML={{
+            __html:
+              "var d=document.documentElement;d.classList.add('js');setTimeout(function(){if(!window.__ahReveal)d.classList.add('reveal-off')},4000);",
+          }}
+        />
         <link rel="stylesheet" href={resetStyles}></link>
         <link rel="stylesheet" href={appStyles}></link>
+        <link rel="stylesheet" href={tokenStyles}></link>
+        <link rel="stylesheet" href={uiStyles}></link>
         <Meta />
         <Links />
       </head>
@@ -179,6 +199,7 @@ export default function App() {
       <PageLayout {...data}>
         <Outlet />
       </PageLayout>
+      <RevealObserver />
     </Analytics.Provider>
   );
 }
