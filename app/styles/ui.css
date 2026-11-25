@@ -1352,3 +1352,17 @@ html.is-locked body {
 .inline-form .btn {
   padding-inline: var(--space-5);
 }
+
+/* ==================================================
+ * FitText — texte ajusté à toute la largeur
+ * ================================================== */
+.fit-text {
+  display: block;
+  width: 100%;
+  white-space: nowrap;
+}
+
+.fit-text__inner {
+  display: inline-block;
+  font-size: var(--fit-text-ssr); /* taille approximative avant mesure */
+}

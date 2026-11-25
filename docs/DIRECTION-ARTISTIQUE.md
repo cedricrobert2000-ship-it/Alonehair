@@ -69,8 +69,7 @@ Pas de GSAP : tout est en CSS + un seul IntersectionObserver (performance mobile
 Fichiers : `app/styles/tokens.css` (toutes les valeurs) et `app/styles/ui.css` (composants, **aucune valeur brute**). Démonstration vivante : **`/styleguide`**.
 
 - **Couleurs** : noir `#0C0C0C`, blanc, gris de texte = noir 65 %, filets noir 12 %, fonds de bloc `#F7F7F7`, pastilles `#EDEDED`. Aucun accent d'interface.
-- **Typographie** (validée le 25/11/2026 : « la même que sur Organic Care ») : texte et interface **Inter 400/500**, titres **Inter Tight 500/600** (remplace PP Mori, police payante d'Organic Care). Échelle fluide 390 → 1440 px : display 48→110, h1 40→72, h2 32→54, h3 24→32, h4 20→24, texte 15, petit 13, boutons 12, sur-titres 11.
-  - Si la licence PP Mori est achetée : fichiers dans `public/fonts`, `@font-face`, puis changer `--font-display`.
+- **Typographie** (décision du 25/11/2026) : **Verdana** partout, comme ce qui s'affiche sur Organic Care (leur pile est « PP Mori, Verdana »), avec **Noto Sans** (Google Fonts) en repli là où Verdana n'est pas installée (Android). Verdana est une police système Microsoft : on ne peut pas l'héberger. Échelle fluide 390 → 1440 px : display 48→110, h1 40→72, h2 32→54, h3 24→32, h4 20→24, texte 15, petit 13, boutons 12, sur-titres 11.
 - **Espacements** : base 4 (4 → 128 px), sections 64 → 120 px, gouttières 16 → 80 px (éditorial, 1220 px) et 16 → 24 px (grilles et médias, 1440 px).
 - **Formes** : angles droits partout. Ombre uniquement sur les tiroirs.
 - **Mouvement** : 200 ms (couleurs), 350 ms (lettres), 500 ms (apparitions, tiroirs), 900 ms (zoom photos), courbe ≈ power2.out.
@@ -94,12 +93,12 @@ Fichiers : `app/styles/tokens.css` (toutes les valeurs) et `app/styles/ui.css` (
 | `RevealObserver` | apparitions au scroll, filet de sécurité si le JS échoue |
 
 ## 4. Points à valider par les propriétaires
-1. ~~Police des titres~~ : réglé, polices d'Organic Care (Inter / Inter Tight).
+1. ~~Police~~ : réglé, Verdana avec repli Noto Sans.
 2. Format des cartes : 3:4 portrait (proposé) ou 4:5 comme Veloraskin.
 3. Encart du hero : blanc façon Veloraskin (proposé) ou texte blanc directement sur la vidéo (site actuel).
 4. Sections Veloraskin écartées : favoris, avant/après, chiffres clients, livraison offerte.
 
 ## 5. Hero (décision du 25/11/2026)
 
-Le hero de l'accueil suit **Organic Care** : vidéo plein écran sous un en-tête transparent (logo et menu en blanc), voile 30 %, petite phrase + lien souligné en bas à gauche, et le **logo Alone Hair en très grand sur toute la largeur** (à la place du mot géant « ORGANIC »). L'en-tête redevient blanc au scroll ou au survol.
+Le hero de l'accueil suit **Organic Care** : vidéo plein écran sous un en-tête transparent (logo et menu en blanc), voile 30 %, petite phrase + lien souligné en bas à gauche, et **« ALONE HAIR » en texte géant, dans la police du site, ajusté à toute la largeur** (comme le mot « ORGANIC »). L'en-tête redevient blanc au scroll ou au survol.
 Les pages de contenu reprennent le « page hero » d'Organic Care : grand titre, puis la vidéo de marque dans un large cadre.

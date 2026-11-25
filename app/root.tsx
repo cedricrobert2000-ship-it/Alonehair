@@ -67,7 +67,7 @@ export function links() {
     {rel: 'preconnect', href: 'https://fonts.gstatic.com', crossOrigin: 'anonymous'},
     {
       rel: 'stylesheet',
-      href: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Inter+Tight:wght@500;600&display=swap',
+      href: 'https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600&display=swap',
     },
     {rel: 'icon', type: 'image/png', href: '/brand/favicon.png'},
   ];

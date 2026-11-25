@@ -48,12 +48,12 @@ Direction : **luxe éditorial, minimal, lumineux**. Beaucoup de blanc, grandes p
 S'inspirer de leur structure, de leurs espacements et de leurs interactions, **sans copier** textes, images ni logos. Le système de design validé est visible sur la route `/styleguide` : toute nouvelle page doit l'utiliser.
 
 - **Couleurs** : noir `#0C0C0C` (texte), blanc `#FFFFFF` (fond), gris de texte secondaire = noir à 65 % d'opacité. Les accents viennent des photos, pas de l'interface.
-- **Typographie** (décision du 25/11/2026, polices d'Organic Care) : Inter (400 / 500) pour le texte et l'interface, Inter Tight (500 / 600) pour les titres (PP Mori, la police d'origine, est payante). Valeurs dans `app/styles/tokens.css`.
+- **Typographie** (décision du 25/11/2026, comme Organic Care) : **Verdana** partout (police système, non hébergeable), avec **Noto Sans** (Google Fonts) en repli là où Verdana manque (Android). Valeurs dans `app/styles/tokens.css`.
   - Sur-titres (eyebrows) : MAJUSCULES, 11–12 px, 500, `letter-spacing: 0.18–0.24em`.
   - Boutons et liens : MAJUSCULES, 12 px, 500, `letter-spacing: 0.18em`, soulignement fin animé.
 - **Largeur max du contenu** : 1220 px ; gouttière 16 px sur mobile, 80 px sur desktop.
 - **Photos** : ratio portrait 3:4 pour les cartes produit, avec une deuxième photo au survol (desktop).
-- **Vidéo hero** : pleine largeur, voile noir à 30 %, texte en bas à gauche (« ALONE HAIR / Designed to be rare »).
+- **Vidéo hero** (façon Organic Care) : plein écran sous l'en-tête transparent, voile noir à 30 %, phrase + lien en bas à gauche, puis « ALONE HAIR » en texte géant (police du site) sur toute la largeur.
 - **Ton** : vouvoiement, phrases courtes, chaleureux et premium. Pas d'emoji.
 - **Animations** : discrètes (fondu ou léger glissement au scroll, 300–500 ms). Respecter `prefers-reduced-motion`.
 

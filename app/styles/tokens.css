@@ -19,15 +19,15 @@
   --color-surface: #f7f7f7; /* fonds de blocs, champs */
   --color-pill: #ededed; /* sélecteurs de variantes au repos */
   --color-on-ink: #ffffff; /* texte sur fond noir ou photo */
-  --color-veil: rgb(0 0 0 / 0.3); /* voile hero 30 % */
+  --color-veil: rgb(0 0 0 / 0.3); /* voile des bannières photo (pas sur la vidéo du hero) */
   --color-focus: #0c0c0c;
 
   /* ---------- Typographies ---------- */
-  /* Polices d'Organic Care : Inter (texte) ; PP Mori (titres) est payante,
-     remplacée par Inter Tight. Si la licence PP Mori est achetée : déposer les
-     fichiers dans public/fonts et changer --font-display ici. */
-  --font-display: 'Inter Tight', 'Inter', system-ui, sans-serif; /* titres */
-  --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif; /* texte, UI */
+  /* Verdana (police système : iPhone, Mac, Windows), sinon Noto Sans
+     (Google Fonts, téléchargée seulement si Verdana manque, ex. Android).
+     Verdana ne peut pas être hébergée par nous (licence Microsoft). */
+  --font-display: Verdana, 'Noto Sans', sans-serif; /* titres */
+  --font-body: Verdana, 'Noto Sans', sans-serif; /* texte, UI */
 
   --weight-regular: 400;
   --weight-medium: 500;
@@ -55,12 +55,12 @@
   --measure-lead: 38ch; /* longueur de ligne max : chapeau */
   --measure-prose: 62ch; /* longueur de ligne max : texte courant */
 
-  --tracking-display: -0.045em;
-  --tracking-h1: -0.035em;
-  --tracking-title: -0.02em;
+  --tracking-display: -0.03em;
+  --tracking-h1: -0.025em;
+  --tracking-title: -0.015em;
   --tracking-tight: -0.01em;
-  --tracking-eyebrow: 0.22em;
-  --tracking-button: 0.18em;
+  --tracking-eyebrow: 0.16em;
+  --tracking-button: 0.12em;
 
   /* ---------- Espacements (base 4) ---------- */
   --space-1: 0.25rem; /* 4 */
@@ -206,10 +206,14 @@
 
   /* Hero (Organic Care) et page hero */
   --hero-text-w: 42rem;
+  --hero-brand-leading: 0.9;
+  --hero-brand-tracking: -0.02em;
+  --fit-text-ssr: 13.5vw; /* « ALONE HAIR » en Verdana ≈ pleine largeur */
   --hero-lead-size: clamp(1rem, 0.85rem + 0.6vw, 1.375rem); /* 16 → 22 */
   --page-hero-ratio: 1440 / 560;
   --page-hero-ratio-mobile: 4 / 5;
-  --color-header-shade: rgb(0 0 0 / 0.35); /* dégradé haut, lisibilité du menu */
+  --shadow-text-on-photo: 0 1px 12px rgb(0 0 0 / 0.25); /* lisibilité du texte blanc sans voile */
+  --shadow-header-on-photo: 0 1px 3px rgb(0 0 0 / 0.45), 0 0 18px rgb(0 0 0 / 0.3); /* menu blanc sur vidéo claire */
 
   /* Collection */
   --plp-side-w: 240px;

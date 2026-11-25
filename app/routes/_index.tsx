@@ -12,6 +12,7 @@ import {
 import {seoMeta} from '~/lib/seo';
 import {HERO_FIELDS_FRAGMENT, parseHero} from '~/lib/hero';
 import {BrandVideo} from '~/components/ui/BrandVideo';
+import {FitText} from '~/components/ui/FitText';
 import {toPath} from '~/lib/url';
 import {stripHtml} from '~/lib/seo';
 
@@ -85,7 +86,7 @@ export default function Homepage() {
 /* ------------------------------------------------------------------ Hero */
 /**
  * Hero façon Organic Care : vidéo plein écran sous l'en-tête transparent,
- * phrase + lien en bas à gauche, logo Alone Hair géant sur toute la largeur.
+ * phrase + lien en bas à gauche, « ALONE HAIR » en texte géant sur toute la largeur.
  */
 function Hero({data}: {data: Data}) {
   const hero = data.heroContent;
@@ -110,10 +111,9 @@ function Hero({data}: {data: Data}) {
             </Link>
           )}
         </div>
-        <h1 className="hero__brand">
-          <span className="sr-only">{hero.title ?? data.shop.name}</span>
-          <img src="/brand/logo-alone-hair.png" alt="" width={779} height={68} fetchPriority="high" />
-        </h1>
+        <FitText as="h1" className="hero__brand">
+          {(hero.title ?? data.shop.name).toUpperCase()}
+        </FitText>
       </div>
     </section>
   );

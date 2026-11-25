@@ -28,18 +28,11 @@
   object-fit: cover;
 }
 
-.hero__media::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(to bottom, var(--color-header-shade), transparent 25%),
-    var(--color-veil);
-  pointer-events: none;
-}
 
 .hero__content {
   position: relative;
+  /* sans voile : une ombre très légère garde le texte lisible sur la vidéo */
+  text-shadow: var(--shadow-text-on-photo);
   display: grid;
   gap: var(--space-6);
   width: 100%;
@@ -74,13 +67,12 @@
 
 .hero__brand {
   margin: 0;
-  line-height: 0;
-}
-
-.hero__brand img {
-  width: 100%;
-  height: auto;
-  filter: invert(1);
+  overflow: hidden; /* sert aussi de masque à l'animation d'entrée */
+  font-family: var(--font-display);
+  font-weight: var(--weight-regular);
+  line-height: var(--hero-brand-leading);
+  letter-spacing: var(--hero-brand-tracking);
+  color: var(--color-on-ink);
 }
 
 .hero__toggle {
@@ -95,7 +87,7 @@
 }
 
 /* Entrée : le logo se dévoile par le bas, le texte suit */
-.js .hero__brand img {
+.js .hero__brand .fit-text__inner {
   animation: hero-brand var(--dur-slow) var(--ease-out) var(--delay-hero-box) both;
 }
 
@@ -105,11 +97,9 @@
 
 @keyframes hero-brand {
   from {
-    clip-path: inset(100% 0 0 0);
-    transform: translateY(var(--reveal-distance));
+    transform: translateY(100%);
   }
   to {
-    clip-path: inset(0 0 0 0);
     transform: none;
   }
 }

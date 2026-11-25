@@ -22,6 +22,7 @@ export function BrandVideo({
 }) {
   const ref = useRef<HTMLVideoElement>(null);
   const [playing, setPlaying] = useState(false);
+  const tried = useRef(new Set<string>());
 
   const best = (v: HeroVideo, maxHeight: number) =>
     [...v.sources].reverse().find((s) => s.height <= maxHeight) ?? v.sources[0];
@@ -72,6 +73,19 @@ export function BrandVideo({
         aria-hidden="true"
         onPlay={() => setPlaying(true)}
         onPause={() => setPlaying(false)}
+        onError={(e) => {
+          // fichier refusé ou introuvable : on essaie une autre qualité
+          const el = e.currentTarget;
+          const all = [...(videoMobile ?? video).sources, ...video.sources].map((s) => s.url);
+          const next = all.find((u) => !tried.current.has(u));
+          tried.current.add(el.currentSrc || el.src);
+          if (next) {
+            tried.current.add(next);
+            el.src = next;
+            el.load();
+            void el.play().catch(() => setPlaying(false));
+          }
+        }}
       />
       <button
         type="button"

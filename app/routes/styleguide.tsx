@@ -96,11 +96,11 @@ const COLORS = [
 ] as const;
 
 const TYPE = [
-  ['display', 'Inter Tight 500 · 48 → 110 px · −4,5 %', 'Designed to be rare'],
-  ['h1', 'Inter Tight 500 · 40 → 72 px', 'Perruques faites main'],
-  ['h2', 'Inter Tight 500 · 32 → 54 px', 'Les préférées de nos clientes'],
-  ['h3', 'Inter Tight 500 · 24 → 32 px', 'Notre histoire'],
-  ['h4', 'Inter Tight 500 · 20 → 24 px', 'Livraison et échanges'],
+  ['display', 'Verdana · 48 → 110 px · −3 %', 'Designed to be rare'],
+  ['h1', 'Verdana · 40 → 72 px', 'Perruques faites main'],
+  ['h2', 'Verdana · 32 → 54 px', 'Les préférées de nos clientes'],
+  ['h3', 'Verdana · 24 → 32 px', 'Notre histoire'],
+  ['h4', 'Verdana · 20 → 24 px', 'Livraison et échanges'],
 ] as const;
 
 const SPACES = [
@@ -166,9 +166,9 @@ export default function Styleguide() {
 
       <SgSection id="typographie" n="02" title="Typographie">
         <p className="text-soft sg-note">
-          Polices d&apos;Organic Care : texte et interface en <strong>Inter</strong>,
-          titres en <strong>Inter Tight</strong> (à la place de PP Mori, police
-          payante). Deux familles Google Fonts, quatre graisses au total.
+          Comme sur Organic Care : <strong>Verdana</strong> partout (police
+          système de l&apos;iPhone, du Mac et de Windows), avec{' '}
+          <strong>Noto Sans</strong> en repli là où elle manque (Android).
         </p>
         <div className="sg-type">
           {TYPE.map(([cls, spec, sample]) => (
@@ -183,7 +183,7 @@ export default function Styleguide() {
           <div className="sg-type__row" data-reveal>
             <span className="sg-type__spec">
               <code>.lead</code>
-              <span className="text-soft">Inter 400 · 17 px</span>
+              <span className="text-soft">Verdana · 17 px</span>
             </span>
             <p className="lead">
               Des perruques en cheveux 100 % naturels, faites main, sur commande.
@@ -192,7 +192,7 @@ export default function Styleguide() {
           <div className="sg-type__row" data-reveal>
             <span className="sg-type__spec">
               <code>body</code>
-              <span className="text-soft">Inter 400 · 15 px · 1,65</span>
+              <span className="text-soft">Verdana · 15 px · 1,65</span>
             </span>
             <p className="prose">
               Chaque pièce est montée à la main à partir d&apos;un seul donneur.
@@ -207,7 +207,7 @@ export default function Styleguide() {
           <div className="sg-type__row" data-reveal>
             <span className="sg-type__spec">
               <code>.eyebrow</code>
-              <span className="text-soft">Inter 500 · 11 px · capitales · +22 %</span>
+              <span className="text-soft">Verdana · 11 px · capitales · +16 %</span>
             </span>
             <p className="eyebrow">Nos best-sellers</p>
           </div>

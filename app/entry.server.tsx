@@ -19,9 +19,21 @@ export default async function handleRequest(
       checkoutDomain: context.env.PUBLIC_CHECKOUT_DOMAIN,
       storeDomain: context.env.PUBLIC_STORE_DOMAIN,
     },
-    // Polices Google Fonts (Inter Tight pour les titres, Inter pour le texte)
+    // Google Fonts : Noto Sans, repli de Verdana quand elle n'est pas installée
     styleSrc: ["'self'", "'unsafe-inline'", 'https://cdn.shopify.com', 'https://fonts.googleapis.com'],
     fontSrc: ["'self'", 'https://cdn.shopify.com', 'https://fonts.gstatic.com'],
+    // Vidéos Shopify : selon l'API, servies par le CDN ou par le domaine de la boutique
+    mediaSrc: [
+      "'self'",
+      'blob:',
+      'https://cdn.shopify.com',
+      'https://*.shopify.com',
+      'https://*.shopifycdn.com',
+      'https://*.myshopify.com',
+      'https://alonehair.com',
+      'https://www.alonehair.com',
+      ...(context.env.PUBLIC_STORE_DOMAIN?.startsWith('http') ? [] : [`https://${context.env.PUBLIC_STORE_DOMAIN}`]),
+    ],
     // Lecteur TikTok de la fiche produit (chargé seulement au clic)
     frameSrc: ["'self'", 'https://www.tiktok.com'],
   });
