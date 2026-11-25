@@ -2,6 +2,8 @@
 
 # Alone Hair — boutique sur mesure (Hydrogen)
 
+> Historique et état actuel de la boutique : lire `docs/CONTEXTE.md` avant de commencer. Prompts de travail : `DEMARRAGE.md`.
+
 Site e-commerce sur mesure pour **Alone Hair**, marque de perruques et extensions en cheveux 100 % naturels (single donor, Raw Hair), faites main, sur commande.
 Front codé avec **Shopify Hydrogen**, hébergé sur **Oxygen**. **Shopify reste le back-office** : produits, stock, prix, paiement, commandes, factures, e-mails.
 
