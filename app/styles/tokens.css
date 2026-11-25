@@ -28,10 +28,13 @@
      Verdana ne peut pas être hébergée par nous (licence Microsoft). */
   --font-display: Verdana, 'Noto Sans', sans-serif; /* titres */
   --font-body: Verdana, 'Noto Sans', sans-serif; /* texte, UI */
+  /* mot en italique des blocs éditoriaux (Organic Care utilise PP Editorial New, payante) */
+  --font-accent: 'Instrument Serif', Georgia, serif;
 
   --weight-regular: 400;
   --weight-medium: 500;
   --weight-semibold: 600;
+  --weight-bold: 700;
 
   /* Échelle fluide : mobile (390 px) → desktop (1440 px) */
   --text-display: clamp(3rem, 1.4rem + 6.6vw, 6.875rem); /* 48 → 110 */
@@ -90,6 +93,7 @@
 
   /* ---------- Formes ---------- */
   --radius-0: 0;
+  --radius-card: 8px; /* arrondi léger des cartes (bloc qualités) */
   --radius-pill: 999px; /* uniquement pastilles rondes (pagination, lecture vidéo) */
 
   /* ---------- Ombres ---------- */
@@ -207,13 +211,23 @@
   /* Hero (Organic Care) et page hero */
   --hero-text-w: 42rem;
   --hero-brand-leading: 0.9;
-  --hero-brand-tracking: -0.02em;
-  --fit-text-ssr: 13.5vw; /* « ALONE HAIR » en Verdana ≈ pleine largeur */
+  --hero-brand-tracking: -0.035em;
+  --fit-text-ssr: min(12vw, 11rem); /* « ALONE HAIR » en Verdana gras ≈ largeur du contenu */
   --hero-lead-size: clamp(1rem, 0.85rem + 0.6vw, 1.375rem); /* 16 → 22 */
   --page-hero-ratio: 1440 / 560;
   --page-hero-ratio-mobile: 4 / 5;
-  --shadow-text-on-photo: 0 1px 12px rgb(0 0 0 / 0.25); /* lisibilité du texte blanc sans voile */
-  --shadow-header-on-photo: 0 1px 3px rgb(0 0 0 / 0.45), 0 0 18px rgb(0 0 0 / 0.3); /* menu blanc sur vidéo claire */
+  --color-hero-veil: rgb(0 0 0 / 0.2); /* filtre léger du hero, comme Organic Care (noir 20 %) */
+
+  /* Bloc qualités (Organic Care) */
+  --qualities-title-size: clamp(2rem, 1.2rem + 3.2vw, 4rem); /* 32 → 64 */
+  --qualities-accent-size: clamp(2.5rem, 1.6rem + 3.6vw, 4.5rem); /* 40 → 72 */
+  --qualities-stage-h: 820px;
+  --quality-card-w: 280px;
+  --quality-icon: 56px;
+  --qualities-oval-rotate: -28deg;
+  --qualities-head-w: 44rem;
+  --qualities-text-w: 22rem;
+  --accent-underline: 3px;
 
   /* Collection */
   --plp-side-w: 240px;

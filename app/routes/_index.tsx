@@ -13,6 +13,8 @@ import {seoMeta} from '~/lib/seo';
 import {HERO_FIELDS_FRAGMENT, parseHero} from '~/lib/hero';
 import {BrandVideo} from '~/components/ui/BrandVideo';
 import {FitText} from '~/components/ui/FitText';
+import {SITE_IMAGES, srcSetOf} from '~/lib/site-images';
+import {Qualities} from '~/components/home/Qualities';
 import {toPath} from '~/lib/url';
 import {stripHtml} from '~/lib/seo';
 
@@ -76,7 +78,14 @@ export default function Homepage() {
       <Story data={data} />
       <Categories data={data} />
       <TikTokWall data={data} />
-      <Promises data={data} />
+      <Qualities
+        qualities={data.promises.nodes.flatMap((n) => {
+          const title = fieldOf(n.fields, 'title')?.value;
+          return title ? [{handle: n.handle, title, text: fieldOf(n.fields, 'text')?.value}] : [];
+        })}
+        image={data.bestSellers[2]?.images.nodes[0] ?? data.bestSellers[0]?.images.nodes[0] ?? storyImage(data)}
+        text={data.story ? fieldOf(data.story.fields, 'text')?.value : null}
+      />
       <Reviews data={data} />
       <Instagram image={data.bestSellers[1]?.images.nodes[0] ?? null} />
     </div>
@@ -92,17 +101,31 @@ function Hero({data}: {data: Data}) {
   const hero = data.heroContent;
   if (!hero) return null;
   const poster = data.bestSellers[0]?.images.nodes[0];
+  // Image hébergée dans GitHub (public/images) si elle est définie, sinon la vidéo Shopify
+  const repoImage = SITE_IMAGES.heroHome;
 
   return (
     <section className="hero" aria-label="À la une">
       <div className="hero__media">
-        {hero.video ? (
+        {repoImage ? (
+          <img
+            className="hero__video"
+            src={repoImage.src}
+            srcSet={srcSetOf(repoImage)}
+            sizes="100vw"
+            width={repoImage.width}
+            height={repoImage.height}
+            alt={repoImage.alt}
+            fetchPriority="high"
+            style={{objectPosition: repoImage.position}}
+          />
+        ) : hero.video ? (
           <BrandVideo video={hero.video} videoMobile={hero.videoMobile} className="hero__video" controlClassName="hero__toggle" />
         ) : poster ? (
           <Image data={poster} alt="" sizes="100vw" loading="eager" fetchPriority="high" className="hero__video" />
         ) : null}
       </div>
-      <div className="hero__content container container--wide">
+      <div className="hero__content container">
         <div className="hero__text">
           {hero.subtitle && <p className="hero__lead">{hero.subtitle}</p>}
           {hero.ctaLabel && hero.ctaLink && (
@@ -138,6 +161,11 @@ function BestSellers({products}: {products: ProductCardData[]}) {
       </ul>
     </Section>
   );
+}
+
+function storyImage(data: Data) {
+  const ref = data.story?.fields.find((f) => f.key === 'image')?.reference;
+  return ref?.__typename === 'MediaImage' ? ref.image : null;
 }
 
 /* ----------------------------------------------------------------- Story */
@@ -235,26 +263,6 @@ function TikTokWall({data}: {data: Data}) {
         ))}
       </ul>
     </Section>
-  );
-}
-
-/* -------------------------------------------------------------- Promesses */
-function Promises({data}: {data: Data}) {
-  const items = data.promises.nodes
-    .map((n) => ({title: fieldOf(n.fields, 'title')?.value, text: fieldOf(n.fields, 'text')?.value}))
-    .filter((p) => p.title);
-  if (!items.length) return null;
-  return (
-    <section className="promises section--sm" aria-label="Nos engagements">
-      <ul className="container promises__list" data-reveal-group>
-        {items.map((p) => (
-          <li key={p.title}>
-            <p className="h4">{p.title}</p>
-            {p.text && <p className="text-soft">{p.text}</p>}
-          </li>
-        ))}
-      </ul>
-    </section>
   );
 }
 
@@ -381,6 +389,7 @@ const HOME_QUERY = `#graphql
     }
     promises: metaobjects(type: "home_promise", first: 8) {
       nodes {
+        handle
         fields {
           key
           value

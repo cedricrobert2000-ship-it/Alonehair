@@ -28,11 +28,18 @@
   object-fit: cover;
 }
 
+/* filtre léger pour la lisibilité du texte blanc (Organic Care : noir 20 %) */
+.hero__media::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--color-hero-veil);
+  pointer-events: none;
+}
+
 
 .hero__content {
   position: relative;
-  /* sans voile : une ombre très légère garde le texte lisible sur la vidéo */
-  text-shadow: var(--shadow-text-on-photo);
   display: grid;
   gap: var(--space-6);
   width: 100%;
@@ -69,7 +76,7 @@
   margin: 0;
   overflow: hidden; /* sert aussi de masque à l'animation d'entrée */
   font-family: var(--font-display);
-  font-weight: var(--weight-regular);
+  font-weight: var(--weight-bold);
   line-height: var(--hero-brand-leading);
   letter-spacing: var(--hero-brand-tracking);
   color: var(--color-on-ink);
@@ -936,4 +943,194 @@
   flex-wrap: wrap;
   align-items: center;
   gap: var(--space-8);
+}
+
+/* ============================== Bloc qualités (façon Organic Care) */
+.qualities__inner {
+  position: relative;
+}
+
+.qualities__head {
+  position: relative;
+  z-index: var(--z-base);
+  display: grid;
+  gap: var(--space-4);
+  max-width: var(--qualities-head-w);
+}
+
+.qualities__title {
+  font-family: var(--font-display);
+  max-width: none;
+  font-size: var(--qualities-title-size);
+  font-weight: var(--weight-bold);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-title);
+  text-transform: uppercase;
+}
+
+.qualities__sub {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-4) var(--space-10);
+}
+
+.qualities__sub p:first-child {
+  max-width: var(--qualities-text-w);
+  font-size: var(--text-base);
+}
+
+.qualities__accent {
+  font-family: var(--font-accent);
+  font-size: var(--qualities-accent-size);
+  font-style: italic;
+  line-height: var(--leading-display);
+  text-decoration: underline;
+  text-decoration-thickness: var(--accent-underline);
+  text-underline-offset: var(--link-gap);
+}
+
+.qualities__curve {
+  position: absolute;
+  top: 0;
+  right: 18%;
+  width: 28%;
+  color: var(--color-ink);
+  pointer-events: none;
+}
+
+.qualities__stage {
+  position: relative;
+  margin-top: var(--space-8);
+}
+
+.qualities__oval {
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border-radius: 50%;
+  background: var(--color-surface);
+}
+
+.qualities__oval img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.qualities__cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--grid-gap);
+  margin: var(--space-6) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.quality {
+  border-radius: var(--radius-card);
+  display: grid;
+  justify-items: center;
+  align-content: start;
+  gap: var(--space-3);
+  padding: var(--space-6) var(--space-4);
+  background: var(--color-surface);
+  text-align: center;
+}
+
+.quality__icon {
+  display: grid;
+  place-content: center;
+  width: var(--quality-icon);
+  height: var(--quality-icon);
+  border-radius: var(--radius-pill);
+  background: var(--color-bg);
+}
+
+.quality__title {
+  font-weight: var(--weight-bold);
+  line-height: var(--leading-snug);
+}
+
+.quality__text {
+  color: var(--color-ink-soft);
+  font-size: var(--text-sm);
+}
+
+/* une ligne par groupe de mots (jamais « MAIN, » seul sur sa ligne) */
+.qualities__title span {
+  display: inline-block;
+}
+
+@media (min-width: 1024px) {
+  .qualities__head {
+    max-width: none;
+  }
+
+  .qualities__title span {
+    display: block;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 767px) {
+  .qualities__curve {
+    display: none;
+  }
+}
+
+/* Desktop : photo ovale inclinée au centre, cartes posées autour */
+@media (min-width: 1024px) {
+  .qualities__stage {
+    height: var(--qualities-stage-h);
+    margin-top: calc(-1 * var(--space-16));
+  }
+
+  .qualities__oval {
+    position: absolute;
+    left: 14%;
+    top: 22%;
+    width: 72%;
+    height: 58%;
+    aspect-ratio: auto;
+    transform: rotate(var(--qualities-oval-rotate));
+  }
+
+  .qualities__oval img {
+    /* contre-rotation : la photo reste droite dans l'ovale incliné */
+    transform: rotate(calc(-1 * var(--qualities-oval-rotate))) scale(1.45);
+  }
+
+  .qualities__cards {
+    position: absolute;
+    inset: 0;
+    display: block;
+    margin: 0;
+  }
+
+  .quality {
+    position: absolute;
+    width: var(--quality-card-w);
+    padding: var(--space-8) var(--space-6);
+    box-shadow: var(--shadow-float);
+  }
+
+  .quality--1 {
+    left: 22%;
+    top: 10%;
+  }
+
+  .quality--2 {
+    left: 0;
+    top: 42%;
+  }
+
+  .quality--3 {
+    right: 0;
+    top: 30%;
+  }
+
+  .quality--4 {
+    left: 52%;
+    top: 58%;
+  }
 }

@@ -195,16 +195,17 @@ main:focus {
   font-weight: var(--weight-medium);
 }
 
+/* Sur l'accueil, l'en-tête s'aligne sur la colonne du hero (comme Organic Care) */
+.site-header.is-overlay .site-header__inner {
+  max-width: calc(var(--container) + 2 * var(--gutter));
+  padding-inline: var(--gutter);
+}
+
 /* En-tête transparent au-dessus du hero (accueil) ; redevient blanc au
    scroll, au survol, ou quand un sous-menu / le clavier est dedans */
 .site-header.is-overlay:not(.is-scrolled):not(:hover):not(:focus-within) {
   background: transparent;
   color: var(--color-on-ink);
-  text-shadow: var(--shadow-header-on-photo);
-}
-
-.site-header.is-overlay:not(.is-scrolled):not(:hover):not(:focus-within) svg {
-  filter: drop-shadow(0 1px 3px rgb(0 0 0 / 0.45));
 }
 
 .site-header.is-overlay:not(.is-scrolled):not(:hover):not(:focus-within) .navlink {
@@ -212,7 +213,7 @@ main:focus {
 }
 
 .site-header.is-overlay:not(.is-scrolled):not(:hover):not(:focus-within) .site-logo img {
-  filter: invert(1) drop-shadow(0 1px 3px rgb(0 0 0 / 0.45));
+  filter: invert(1);
 }
 
 .site-header.is-overlay:not(.is-scrolled):not(:hover):not(:focus-within) .cart-count {

@@ -138,6 +138,7 @@ Ajouter pour chaque page : `<title>` et meta description venant du champ SEO Sho
 - Partir du template officiel Hydrogen (`npm create @shopify/hydrogen@latest`), TypeScript.
 - Styles : CSS natif ou Tailwind, avec des variables CSS pour les couleurs et les tailles. Pas de grosse librairie d'UI.
 - Images via le composant `Image` de Hydrogen (CDN Shopify, `srcset`, lazy loading). Vidéos en `muted playsinline loop`.
+- Exception : quelques images d'ambiance de l'accueil (ex. le hero) sont dans le dépôt, `public/images/`, déclarées dans `app/lib/site-images.ts` (mode d'emploi : `public/images/LISEZMOI.md`). Mettre une entrée à `null` pour revenir au contenu Shopify.
 - Performance : viser un LCP < 2,5 s sur mobile 4G, et aucune police chargée hors Google Fonts / auto-hébergée.
 - Accessibilité : contrastes AA, focus visible, `alt` venant de Shopify, sélecteurs de variantes utilisables au clavier.
 - Analytics : composant `Analytics` de Hydrogen + bandeau de consentement cookies (RGPD).
