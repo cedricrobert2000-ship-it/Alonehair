@@ -76,7 +76,8 @@
   margin: 0;
   overflow: hidden; /* sert aussi de masque à l'animation d'entrée */
   font-family: var(--font-display);
-  font-weight: var(--weight-bold);
+  /* Verdana n'a que 2 graisses (normal / gras) : normal, moins massif */
+  font-weight: var(--weight-regular);
   line-height: var(--hero-brand-leading);
   letter-spacing: var(--hero-brand-tracking);
   color: var(--color-on-ink);
