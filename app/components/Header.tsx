@@ -60,6 +60,15 @@ function DesktopItem({item, domains}: {item: MenuItem; domains: Array<string | n
   const [open, setOpen] = useState(false);
   const location = useLocation();
   const ref = useRef<HTMLLIElement>(null);
+  // délai avant fermeture : laisse le temps d'atteindre le sous-menu à la souris
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // vrai si le menu vient d'être ouvert au survol (le clic qui suit ne doit pas le refermer)
+  const openedByHover = useRef(false);
+  const cancelClose = () => {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+    closeTimer.current = null;
+  };
+  useEffect(() => cancelClose, []);
   const url = toPath(item.url, domains);
   const children = item.items ?? [];
 
@@ -84,8 +93,20 @@ function DesktopItem({item, domains}: {item: MenuItem; domains: Array<string | n
     <li
       ref={ref}
       className={`has-mega${open ? ' is-open' : ''}`}
-      onMouseEnter={() => setOpen(true)}
-      onMouseLeave={() => setOpen(false)}
+      onMouseEnter={(e) => {
+        cancelClose();
+        if (!open && e.nativeEvent instanceof MouseEvent) {
+          openedByHover.current = true;
+          setOpen(true);
+        }
+      }}
+      onMouseLeave={() => {
+        cancelClose();
+        closeTimer.current = setTimeout(() => {
+          openedByHover.current = false;
+          setOpen(false);
+        }, 180);
+      }}
       onBlur={(e) => {
         if (!ref.current?.contains(e.relatedTarget as Node)) setOpen(false);
       }}
@@ -97,7 +118,15 @@ function DesktopItem({item, domains}: {item: MenuItem; domains: Array<string | n
         type="button"
         className="navlink roll-trigger site-nav__toggle"
         aria-expanded={open}
-        onClick={() => setOpen((o) => !o)}
+        onClick={() => {
+          if (openedByHover.current) {
+            // déjà ouvert par le survol : le clic confirme, il ne referme pas
+            openedByHover.current = false;
+            setOpen(true);
+            return;
+          }
+          setOpen((o) => !o);
+        }}
       >
         <RollText>{item.title}</RollText>
         <span className="chevron" aria-hidden="true" />

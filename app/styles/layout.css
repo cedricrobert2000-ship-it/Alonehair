@@ -65,13 +65,27 @@ main:focus {
   height: auto;
 }
 
-.site-nav ul {
+.site-nav,
+.site-nav > ul,
+.site-nav > ul > li {
+  align-self: stretch;
+  height: 100%;
+}
+
+/* chaque entrée occupe toute la hauteur de l'en-tête : pas de « trou »
+   entre le bouton et le sous-menu qui fermerait le menu au survol */
+.site-nav > ul {
   display: flex;
   justify-content: center;
   gap: var(--space-8);
   margin: 0;
   padding: 0;
   list-style: none;
+}
+
+.site-nav > ul > li {
+  display: flex;
+  align-items: center;
 }
 
 .site-nav__toggle {
@@ -121,6 +135,9 @@ main:focus {
 }
 
 .site-nav .mega__links {
+  margin: 0;
+  padding: 0;
+  list-style: none;
   display: grid;
   align-content: start;
   justify-content: start;
