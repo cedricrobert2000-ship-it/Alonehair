@@ -105,7 +105,9 @@ export function Drawer({
             </span>
           </button>
         </div>
-        <div className="drawer__body">{children}</div>
+        <div className="drawer__body" data-lenis-prevent>
+          {children}
+        </div>
         {footer && <div className="drawer__foot">{footer}</div>}
       </div>
     </div>

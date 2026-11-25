@@ -229,6 +229,13 @@
   --qualities-text-w: 22rem;
   --accent-underline: 3px;
 
+  /* Bloc histoire (Organic Care « Services ») */
+  --story-min-h: clamp(560px, 92vh, 880px);
+  --story-accent-size: clamp(2rem, 1.3rem + 2.6vw, 3.5rem); /* 32 → 56 */
+  --story-label-size: clamp(1.75rem, 1.2rem + 2vw, 3rem); /* 28 → 48 */
+  --story-text-w: 30rem;
+  --arrow-shift: 6px;
+
   /* Collection */
   --plp-side-w: 240px;
 

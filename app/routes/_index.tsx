@@ -1,4 +1,5 @@
-import {Link, useLoaderData} from 'react-router';
+import {Link, useLoaderData, useRouteLoaderData} from 'react-router';
+import type {RootLoader} from '~/root';
 import type {Route} from './+types/_index';
 import {Image} from '@shopify/hydrogen';
 import {
@@ -162,6 +163,7 @@ function storyImage(data: Data) {
 
 /* ----------------------------------------------------------------- Story */
 function Story({data}: {data: Data}) {
+  const root = useRouteLoaderData<RootLoader>('root');
   const fields = data.story?.fields;
   const title = fieldOf(fields, 'title')?.value;
   if (!data.story || !title) return null;
@@ -169,24 +171,48 @@ function Story({data}: {data: Data}) {
   const image = imgRef?.__typename === 'MediaImage' ? imgRef.image : null;
   const quote = fieldOf(fields, 'quote')?.value;
   const text = fieldOf(fields, 'text')?.value;
+  const eyebrow = fieldOf(fields, 'eyebrow')?.value;
+  // Liens : les collections du menu « Nos collections » (Shopify), puis À propos
+  const links = [
+    ...(root?.header.menu?.items.find((i) => i.items?.length)?.items ?? []).map((c) => ({
+      title: c.title,
+      to: toPath(c.url, data.domains),
+    })),
+    {title: 'Notre histoire', to: '/pages/a-propos'},
+  ];
 
   return (
-    <section className="story section" aria-labelledby="story-title">
-      <div className="banner banner--plain story__banner" data-reveal>
-        <div className="banner__media">
-          {image && <Image data={image} alt={image.altText ?? ''} sizes="100vw" loading="lazy" />}
+    <section className="story-split" aria-labelledby="story-title">
+      <div className="story-split__panel">
+        <div className="story-split__text" data-reveal>
+          <h2 className="story-split__title" id="story-title">
+            <span className="story-split__accent">{title}</span>
+            {eyebrow && <span className="story-split__label">{eyebrow}</span>}
+          </h2>
+          {quote && <p className="story-split__quote">{quote}</p>}
+          {text && <p className="story-split__body">{text}</p>}
         </div>
-        <div className="banner__box story__box">
-          <div className="banner__titles">
-            <p className="eyebrow">{fieldOf(fields, 'eyebrow')?.value}</p>
-            <h2 className="h2" id="story-title">
-              {title}
-            </h2>
+        <ul className="story-split__links" data-reveal-group>
+          {links.map((l) => (
+            <li key={l.to}>
+              <Link to={l.to} prefetch="intent" className="story-split__link">
+                {l.title}
+                <span className="story-split__arrow" aria-hidden="true">
+                  →
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div className="story-split__media" data-reveal>
+        {image && (
+          <div className="story-split__clip">
+            <div className="story-split__parallax" data-parallax="0.08">
+              <Image data={image} alt={image.altText ?? ''} sizes="(min-width: 1024px) 50vw, 100vw" loading="lazy" />
+            </div>
           </div>
-          {quote && <blockquote className="story__quote">{quote}</blockquote>}
-          {text && <p className="text-soft">{text}</p>}
-          <TextLink to="/pages/a-propos">Notre histoire</TextLink>
-        </div>
+        )}
       </div>
     </section>
   );

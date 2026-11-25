@@ -17,6 +17,7 @@ import uiStyles from '~/styles/ui.css?url';
 import layoutStyles from '~/styles/layout.css?url';
 import pageStyles from '~/styles/pages.css?url';
 import {RevealObserver} from '~/components/ui/Reveal';
+import {SmoothScroll} from '~/components/ui/SmoothScroll';
 import {PageLayout} from './components/PageLayout';
 
 export type RootLoader = typeof loader;
@@ -195,6 +196,7 @@ export default function App() {
         <Outlet />
       </PageLayout>
       <RevealObserver />
+      <SmoothScroll />
     </Analytics.Provider>
   );
 }
