@@ -160,7 +160,11 @@ export function Layout({children}: {children?: React.ReactNode}) {
           suppressHydrationWarning
           dangerouslySetInnerHTML={{
             __html:
-              "var d=document.documentElement;d.classList.add('js');setTimeout(function(){if(!window.__ahReveal)d.classList.add('reveal-off')},4000);",
+              "var d=document.documentElement;d.classList.add('js');setTimeout(function(){if(!window.__ahReveal)d.classList.add('reveal-off')},4000);"+
+              // Écran de chargement : 1 fois par visite, jamais pour les robots ni si « animations réduites »
+              "try{var s=sessionStorage,m=matchMedia('(prefers-reduced-motion: reduce)').matches,b=/bot|crawl|spider|lighthouse|pagespeed/i.test(navigator.userAgent);" +
+              "if(!s.getItem('ah-intro')&&!m&&!b){d.classList.add('intro-on');s.setItem('ah-intro','1');" +
+              "setTimeout(function(){d.classList.add('intro-out')},1250);setTimeout(function(){d.classList.remove('intro-on','intro-out')},2100)}}catch(e){}",
           }}
         />
         <link rel="stylesheet" href={tokenStyles}></link>
@@ -171,6 +175,18 @@ export function Layout({children}: {children?: React.ReactNode}) {
         <Links />
       </head>
       <body>
+        <div className="intro" aria-hidden="true">
+          <div className="intro__word">
+            {'ALONE HAIR'.split('').map((c, i) => (
+              // eslint-disable-next-line react/no-array-index-key
+              <span key={i} style={{'--i': i} as React.CSSProperties}>
+                {c === ' ' ? '\u00a0' : c}
+              </span>
+            ))}
+          </div>
+          <p className="intro__tag">Designed to be rare</p>
+          <span className="intro__bar" />
+        </div>
         {children}
         <ScrollRestoration nonce={nonce} />
         <Scripts nonce={nonce} />

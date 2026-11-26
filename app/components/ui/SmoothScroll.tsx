@@ -44,10 +44,30 @@ export function SmoothScroll() {
       });
     };
 
+    // Panneaux sombres (effet Pragma) : s'élargissent et perdent leurs coins
+    // en entrant dans l'écran. --expand : 0 (entrée) → 1 (ouvert).
+    const expand = () => {
+      const vh = window.innerHeight;
+      document.querySelectorAll<HTMLElement>('[data-expand]').forEach((el) => {
+        const top = el.getBoundingClientRect().top;
+        if (top > vh * 1.2) return el.style.setProperty('--expand', '0');
+        const p = reduce ? 1 : Math.max(0, Math.min(1, (vh - top) / (vh * 0.7)));
+        el.style.setProperty('--expand', p.toFixed(3));
+      });
+      // Texte qui se « remplit » mot à mot au défilement : --fill 0 → 1
+      document.querySelectorAll<HTMLElement>('[data-fill]').forEach((el) => {
+        const r = el.getBoundingClientRect();
+        if (r.bottom < 0 || r.top > vh) return;
+        const p = reduce ? 1 : Math.max(0, Math.min(1, (vh * 0.85 - r.top) / (r.height + vh * 0.35)));
+        el.style.setProperty('--fill', p.toFixed(3));
+      });
+    };
+
     let frame = 0;
     const loop = (time: number) => {
       lenis?.raf(time);
       parallax();
+      expand();
       frame = requestAnimationFrame(loop);
     };
     frame = requestAnimationFrame(loop);

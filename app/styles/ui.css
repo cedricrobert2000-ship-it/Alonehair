@@ -1109,10 +1109,34 @@ html.is-locked body {
 }
 
 .catcard__title {
+  min-width: 0;
   font-family: var(--font-display);
   font-size: var(--text-h4);
   font-weight: var(--weight-medium);
+  line-height: var(--leading-snug);
   letter-spacing: var(--tracking-tight);
+  overflow-wrap: anywhere;
+}
+
+.catcard__label .badge {
+  flex: none;
+}
+
+/* Mobile (2 colonnes étroites) : titre plus petit, pas de badge « Voir » */
+@media (max-width: 599px) {
+  .catcard__label {
+    left: var(--space-3);
+    right: var(--space-3);
+    bottom: var(--space-3);
+  }
+
+  .catcard__title {
+    font-size: var(--text-base);
+  }
+
+  .catcard__label .badge {
+    display: none;
+  }
 }
 
 @media (hover: hover) {
@@ -1405,4 +1429,179 @@ html.lenis body {
   font-weight: var(--weight-regular);
   letter-spacing: 0;
   text-transform: none;
+}
+
+/* ==================================================
+ * DarkPanel + FillText (effet Pragma Studio)
+ * ================================================== */
+.dark-panel {
+  --expand: 1;
+  position: relative;
+  z-index: var(--z-base);
+  background: var(--color-deep);
+  color: var(--color-on-ink);
+  /* entrée : en retrait + coins arrondis, puis pleine largeur */
+  clip-path: inset(
+    0 calc((1 - var(--expand)) * var(--panel-inset)) 0
+      calc((1 - var(--expand)) * var(--panel-inset))
+      round calc((1 - var(--expand)) * var(--radius-section))
+      calc((1 - var(--expand)) * var(--radius-section)) 0 0
+  );
+}
+
+.dark-panel a:not(.btn) {
+  color: inherit;
+}
+
+.dark-panel .eyebrow,
+.dark-panel .text-soft {
+  color: var(--color-on-deep-soft);
+}
+
+.fill-text__w {
+  color: var(--color-on-ink);
+  opacity: clamp(0.22, calc(var(--fill, 1) * (var(--n) + 4) - var(--i)), 1);
+  transition: opacity var(--dur-fast) linear;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dark-panel {
+    clip-path: none;
+  }
+
+  .fill-text__w {
+    opacity: 1;
+  }
+}
+
+/* ----------------------------------------------- Manifeste (panneau noir) */
+.manifesto {
+  margin-top: var(--section-y-sm);
+  padding-block: var(--section-y) calc(var(--section-y) + var(--radius-section));
+}
+
+.manifesto__inner {
+  display: grid;
+  gap: var(--space-8);
+}
+
+.manifesto__text {
+  margin: 0;
+  max-width: 22ch;
+  font-family: var(--font-display);
+  font-size: var(--manifesto-size);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-title);
+}
+
+.manifesto__sign {
+  color: var(--color-on-deep-soft);
+}
+
+.manifesto__ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}
+
+/* bouton contour sur fond noir */
+.btn--on-deep {
+  --btn-fg: var(--color-on-ink);
+  --btn-border: var(--color-on-deep-soft);
+}
+
+
+
+/* ==================================================
+ * Écran de chargement (1 fois par visite)
+ * Rideau noir profond : « ALONE HAIR » lettre à lettre, trait qui se
+ * remplit, puis le rideau remonte et découvre la page.
+ * ================================================== */
+.intro {
+  display: none;
+}
+
+html.intro-on {
+  overflow: hidden;
+}
+
+html.intro-on .intro {
+  position: fixed;
+  inset: 0;
+  z-index: calc(var(--z-toast) + 10);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  background: var(--color-deep);
+  color: var(--color-on-ink);
+  transition:
+    transform calc(var(--intro-duration) * 0.7) var(--ease-in-out),
+    border-radius calc(var(--intro-duration) * 0.7) var(--ease-in-out);
+}
+
+html.intro-out .intro {
+  transform: translateY(-100%);
+  border-radius: 0 0 var(--radius-section) var(--radius-section);
+}
+
+.intro__word {
+  display: flex;
+  overflow: hidden;
+  font-family: var(--font-display);
+  font-size: var(--intro-word-size);
+  line-height: var(--leading-display);
+  letter-spacing: var(--tracking-title);
+}
+
+.intro__word span {
+  display: inline-block;
+  transform: translateY(110%);
+  animation: intro-letter calc(var(--intro-duration) * 0.55) var(--ease-out) forwards;
+  animation-delay: calc(var(--i) * var(--intro-letter-stagger));
+}
+
+@keyframes intro-letter {
+  to {
+    transform: none;
+  }
+}
+
+.intro__tag {
+  font-family: var(--font-accent);
+  font-size: var(--text-lg);
+  font-style: italic;
+  opacity: 0;
+  animation: intro-fade var(--dur-base) var(--ease-out) calc(var(--intro-duration) * 0.45) forwards;
+}
+
+@keyframes intro-fade {
+  to {
+    opacity: 0.7;
+  }
+}
+
+.intro__bar {
+  width: var(--intro-bar-w);
+  height: var(--border-w);
+  background: var(--color-on-deep-line);
+  overflow: hidden;
+  position: relative;
+}
+
+.intro__bar::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--color-on-ink);
+  transform: scaleX(0);
+  transform-origin: left;
+  animation: intro-bar var(--intro-duration) var(--ease-in-out) forwards;
+}
+
+@keyframes intro-bar {
+  to {
+    transform: scaleX(1);
+  }
 }

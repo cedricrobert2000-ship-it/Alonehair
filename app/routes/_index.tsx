@@ -21,6 +21,8 @@ import {Ticker} from '~/components/home/Ticker';
 import {Spotlight} from '~/components/home/Spotlight';
 import {Mosaic} from '~/components/home/Mosaic';
 import {ProductCarousel} from '~/components/ui/ProductCarousel';
+import {Manifesto} from '~/components/content/ContentBlocks';
+import {Button} from '~/components/ui/Button';
 import {toPath} from '~/lib/url';
 import {stripHtml} from '~/lib/seo';
 
@@ -96,6 +98,16 @@ export default function Homepage() {
       <Categories data={data} />
       <BestSellers products={carousel} />
       <Spotlight product={spotlight} />
+      <Manifesto
+        eyebrow="Alone Hair"
+        text="Des perruques en cheveux 100 % naturels, issus d’un seul donneur, faites main et sur commande. Tout est pensé pour durer, sublimer et s’adapter à chaque femme."
+      >
+        <div className="manifesto__ctas">
+          <Button to="/pages/a-propos" variant="light">
+            Notre histoire
+          </Button>
+        </div>
+      </Manifesto>
       <Story data={data} />
       {mosaic && (
         <Mosaic

@@ -2,6 +2,8 @@ import {Suspense} from 'react';
 import {Await, Link} from 'react-router';
 import type {FooterQuery, HeaderQuery} from 'storefrontapi.generated';
 import {toPath} from '~/lib/url';
+import {DarkPanel} from '~/components/ui/DarkPanel';
+import {FitText} from '~/components/ui/FitText';
 
 interface FooterProps {
   footer: Promise<FooterQuery | null>;
@@ -26,64 +28,66 @@ export function Footer({footer: footerPromise, header, publicStoreDomain}: Foote
   const pages = items.filter((i) => !i.items?.length);
 
   return (
-    <footer className="site-footer">
-      <div className="container container--wide">
-        <div className="site-footer__top">
-          <Link to="/" className="site-footer__logo" aria-label={`${header.shop.name}, accueil`}>
-            <img src="/brand/logo-alone-hair.png" alt="" width={779} height={68} loading="lazy" />
+    <DarkPanel as="footer" className="site-footer">
+      <div className="container">
+        <div className="site-footer__cta" data-reveal>
+          <p className="eyebrow">Une question, une nuance, une commande ?</p>
+          <a className="site-footer__big" href={SOCIALS[0].href} target="_blank" rel="noopener noreferrer">
+            Écrivez-nous sur Instagram
+            <span className="site-footer__arrow" aria-hidden="true">
+              ↗
+            </span>
+            <span className="sr-only"> (nouvel onglet)</span>
+          </a>
+          <Link className="link" to="/pages/contact">
+            Toutes nos coordonnées
           </Link>
+        </div>
 
-          <div className="site-footer__cols">
-            {collections.length > 0 && (
-              <FooterCol title="Collections">
-                {collections.map((c) => (
-                  <li key={c.id}>
-                    <Link to={toPath(c.url, domains)} prefetch="intent">
-                      {c.title}
-                    </Link>
-                  </li>
-                ))}
-              </FooterCol>
-            )}
-            <FooterCol title="La maison">
-              {pages.map((p) => (
-                <li key={p.id}>
-                  <Link to={toPath(p.url, domains)} prefetch="intent">
-                    {p.title}
+        <div className="site-footer__cols">
+          {collections.length > 0 && (
+            <FooterCol title="Collections">
+              {collections.map((c) => (
+                <li key={c.id}>
+                  <Link to={toPath(c.url, domains)} prefetch="intent">
+                    {c.title}
                   </Link>
                 </li>
               ))}
             </FooterCol>
-            <Suspense fallback={null}>
-              <Await resolve={footerPromise} errorElement={null}>
-                {(footer) => {
-                  const policies = [
-                    footer?.shop.shippingPolicy,
-                    footer?.shop.refundPolicy,
-                    footer?.shop.termsOfService,
-                    footer?.shop.privacyPolicy,
-                  ].filter(Boolean);
-                  if (!policies.length) return null;
-                  return (
-                    <FooterCol title="Informations">
-                      {policies.map((p) => (
-                        <li key={p!.id}>
-                          <Link to={`/policies/${p!.handle}`}>{p!.title}</Link>
-                        </li>
-                      ))}
-                    </FooterCol>
-                  );
-                }}
-              </Await>
-            </Suspense>
-          </div>
-        </div>
-
-        <div className="site-footer__bottom">
-          <p>
-            © {new Date().getFullYear()} {header.shop.name}. Cheveux 100 % naturels, faits main.
-          </p>
-          <ul className="site-footer__socials">
+          )}
+          <FooterCol title="La maison">
+            {pages.map((p) => (
+              <li key={p.id}>
+                <Link to={toPath(p.url, domains)} prefetch="intent">
+                  {p.title}
+                </Link>
+              </li>
+            ))}
+          </FooterCol>
+          <Suspense fallback={null}>
+            <Await resolve={footerPromise} errorElement={null}>
+              {(footer) => {
+                const policies = [
+                  footer?.shop.shippingPolicy,
+                  footer?.shop.refundPolicy,
+                  footer?.shop.termsOfService,
+                  footer?.shop.privacyPolicy,
+                ].filter(Boolean);
+                if (!policies.length) return null;
+                return (
+                  <FooterCol title="Informations">
+                    {policies.map((p) => (
+                      <li key={p!.id}>
+                        <Link to={`/policies/${p!.handle}`}>{p!.title}</Link>
+                      </li>
+                    ))}
+                  </FooterCol>
+                );
+              }}
+            </Await>
+          </Suspense>
+          <FooterCol title="Suivez-nous">
             {SOCIALS.map((s) => (
               <li key={s.label}>
                 <a href={s.href} target="_blank" rel="noopener noreferrer">
@@ -92,10 +96,21 @@ export function Footer({footer: footerPromise, header, publicStoreDomain}: Foote
                 </a>
               </li>
             ))}
-          </ul>
+          </FooterCol>
+        </div>
+
+        <FitText as="p" className="site-footer__word">
+          {header.shop.name.toUpperCase()}
+        </FitText>
+
+        <div className="site-footer__bottom">
+          <p>
+            © {new Date().getFullYear()} {header.shop.name}. Cheveux 100 % naturels, faits main, sur commande.
+          </p>
+          <Link to="/collections/perruques">Découvrir les perruques</Link>
         </div>
       </div>
-    </footer>
+    </DarkPanel>
   );
 }
 

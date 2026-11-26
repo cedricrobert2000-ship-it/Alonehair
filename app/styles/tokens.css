@@ -19,6 +19,12 @@
   --color-surface: #f7f7f7; /* fonds de blocs, champs */
   --color-pill: #ededed; /* sélecteurs de variantes au repos */
   --color-on-ink: #ffffff; /* texte sur fond noir ou photo */
+  /* Noir profond des sections sombres (repris de Pragma Studio : #111 / #000) */
+  --color-deep: #111111;
+  --color-deep-black: #000000;
+  --color-on-deep-soft: rgb(255 255 255 / 0.6);
+  --color-on-deep-mute: rgb(255 255 255 / 0.22); /* mots pas encore « remplis » */
+  --color-on-deep-line: rgb(255 255 255 / 0.14);
   --color-veil: rgb(0 0 0 / 0.3); /* voile des bannières photo (pas sur la vidéo du hero) */
   --color-focus: #0c0c0c;
 
@@ -93,7 +99,8 @@
 
   /* ---------- Formes ---------- */
   --radius-0: 0;
-  --radius-card: 8px; /* arrondi léger des cartes (bloc qualités) */
+  --radius-card: 8px;
+  --radius-section: clamp(24px, 4vw, 56px); /* coins des panneaux sombres à l'arrivée */ /* arrondi léger des cartes (bloc qualités) */
   --radius-pill: 999px; /* uniquement pastilles rondes (pagination, lecture vidéo) */
 
   /* ---------- Ombres ---------- */
@@ -255,6 +262,20 @@
   --carousel-progress-h: 2px;
   --spotlight-title-size: clamp(2.25rem, 1.4rem + 3.4vw, 4.5rem); /* 36 → 72 */
   --mosaic-title-size: clamp(1.75rem, 1.2rem + 2.2vw, 3.25rem); /* 28 → 52 */
+
+  /* Panneaux sombres (effet Pragma) et pages de contenu */
+  --panel-inset: 4vw; /* retrait latéral avant ouverture complète */
+  --manifesto-size: clamp(1.75rem, 1rem + 3vw, 3.75rem); /* 28 → 60 */
+  --page-title-size: clamp(3rem, 1.4rem + 7vw, 8rem); /* 48 → 128 */
+  --stack-card-top: calc(var(--header-h) + var(--space-6));
+  --stack-card-step: var(--space-4);
+  --footer-word-ssr: min(13vw, 12rem);
+
+  /* Écran de chargement */
+  --intro-duration: 1100ms;
+  --intro-word-size: clamp(2.5rem, 1.4rem + 5vw, 6rem); /* 40 → 96 */
+  --intro-letter-stagger: 45ms;
+  --intro-bar-w: min(40vw, 12rem);
 
   /* Collection */
   --plp-side-w: 240px;

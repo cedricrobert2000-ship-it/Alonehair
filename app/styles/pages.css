@@ -1005,9 +1005,9 @@
   font-size: var(--text-sm);
 }
 
-/* une ligne par groupe de mots (jamais « MAIN, » seul sur sa ligne) */
+/* mobile : le titre coule naturellement ; desktop : une ligne par groupe */
 .qualities__title span {
-  display: inline-block;
+  display: inline;
 }
 
 @media (min-width: 1024px) {

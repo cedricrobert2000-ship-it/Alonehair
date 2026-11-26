@@ -303,15 +303,13 @@ main:focus {
 }
 
 /* ------------------------------------------------------- Pied de page */
+/* Panneau noir profond qui s'ouvre au défilement (DarkPanel), grand appel
+   à écrire, colonnes de liens, « ALONE HAIR » géant façon Organic Care */
 .site-footer {
-  margin-top: var(--section-y);
-  padding-block: var(--space-16) var(--space-6);
-  background: var(--color-ink);
-  color: var(--color-on-ink);
+  padding-block: var(--section-y) var(--space-6);
 }
 
 .site-footer a {
-  color: inherit;
   text-decoration: none;
 }
 
@@ -320,38 +318,45 @@ main:focus {
   text-underline-offset: var(--underline-offset);
 }
 
-.site-footer__top {
+.site-footer__cta {
   display: grid;
-  gap: var(--space-12);
+  justify-items: start;
+  gap: var(--space-5);
+  padding-bottom: var(--space-16);
+  border-bottom: var(--border-w) solid var(--color-on-deep-line);
 }
 
-@media (min-width: 1024px) {
-  .site-footer__top {
-    grid-template-columns: 1fr auto;
-    align-items: start;
+.site-footer__big {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  font-family: var(--font-display);
+  font-size: var(--manifesto-size);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-title);
+}
+
+.site-footer__arrow {
+  font-size: 0.6em;
+  transition: transform var(--dur-roll) var(--ease-out);
+}
+
+@media (hover: hover) {
+  .site-footer__big:hover .site-footer__arrow {
+    transform: translate(var(--arrow-shift), calc(-1 * var(--arrow-shift)));
   }
-}
-
-.site-footer__logo {
-  display: block;
-  width: min(100%, var(--banner-box-w));
-}
-
-.site-footer__logo img {
-  width: 100%;
-  height: auto;
-  filter: invert(1);
 }
 
 .site-footer__cols {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--space-10) var(--space-12);
+  gap: var(--space-10) var(--space-8);
+  padding-block: var(--space-12);
 }
 
 @media (min-width: 768px) {
   .site-footer__cols {
-    grid-template-columns: repeat(3, auto);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
 
@@ -361,12 +366,10 @@ main:focus {
   font-weight: var(--weight-medium);
   letter-spacing: var(--tracking-eyebrow);
   text-transform: uppercase;
-  color: var(--color-on-ink);
-  opacity: var(--opacity-soft);
+  color: var(--color-on-deep-soft);
 }
 
-.site-footer__col ul,
-.site-footer__socials {
+.site-footer__col ul {
   display: grid;
   gap: var(--space-2);
   margin: 0;
@@ -375,25 +378,31 @@ main:focus {
   font-size: var(--text-sm);
 }
 
+.site-footer__word {
+  margin: var(--space-8) 0 var(--space-4);
+  font-family: var(--font-display);
+  line-height: var(--hero-brand-leading);
+  letter-spacing: var(--hero-brand-tracking);
+  color: var(--color-on-ink);
+}
+
+.site-footer__word .fit-text__inner {
+  font-size: var(--footer-word-ssr);
+}
+
 .site-footer__bottom {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
   gap: var(--space-4);
-  margin-top: var(--space-16);
   padding-top: var(--space-6);
-  border-top: var(--border-w) solid var(--color-line-on-ink);
+  border-top: var(--border-w) solid var(--color-on-deep-line);
   font-size: var(--text-sm);
+  color: var(--color-on-deep-soft);
 }
 
 .site-footer__bottom p {
   margin: 0;
-  opacity: var(--opacity-soft);
-}
-
-.site-footer__socials {
-  display: flex;
-  gap: var(--space-6);
 }
 
 /* ------------------------------------------------------------- Panier */
@@ -626,7 +635,7 @@ main:focus {
 
 /* ------------------------------------------- Suivez-nous (toutes les pages) */
 .follow {
-  padding-block: var(--section-y) var(--space-8);
+  padding-block: var(--section-y) calc(var(--space-8) + var(--radius-section));
   background: var(--color-surface);
   overflow: hidden;
 }
@@ -656,9 +665,9 @@ main:focus {
   text-underline-offset: var(--link-gap);
 }
 
-/* le pied de page colle à la bande */
+/* le panneau noir du pied de page monte sur la bande grise */
 .follow + .site-footer {
-  margin-top: 0;
+  margin-top: calc(-1 * var(--radius-section));
 }
 
 .marquee {
