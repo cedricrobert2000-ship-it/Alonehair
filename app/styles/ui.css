@@ -1555,8 +1555,8 @@ html.lenis body {
 
 /* ==================================================
  * Écran de chargement (1 fois par visite)
- * Rideau noir profond : « ALONE HAIR » lettre à lettre, trait qui se
- * remplit, puis le rideau remonte et découvre la page.
+ * Rideau noir profond : « ALONE HAIR » lettre à lettre, trait simple
+ * très fin qui se dessine, puis le rideau remonte et découvre la page.
  * ================================================== */
 .intro {
   display: none;
@@ -1593,7 +1593,7 @@ html.intro-out .intro {
   font-family: var(--font-display);
   font-size: var(--intro-word-size);
   line-height: var(--leading-display);
-  letter-spacing: var(--tracking-title);
+  letter-spacing: var(--tracking-eyebrow);
 }
 
 .intro__word span {
@@ -1611,7 +1611,7 @@ html.intro-out .intro {
 
 .intro__tag {
   font-family: var(--font-accent);
-  font-size: var(--text-lg);
+  font-size: var(--text-base);
   font-style: italic;
   opacity: 0;
   animation: intro-fade var(--dur-base) var(--ease-out) calc(var(--intro-duration) * 0.45) forwards;
@@ -1624,17 +1624,9 @@ html.intro-out .intro {
 }
 
 .intro__bar {
+  display: block;
   width: var(--intro-bar-w);
-  height: var(--border-w);
-  background: var(--color-on-deep-line);
-  overflow: hidden;
-  position: relative;
-}
-
-.intro__bar::after {
-  content: '';
-  position: absolute;
-  inset: 0;
+  height: var(--intro-line);
   background: var(--color-on-ink);
   transform: scaleX(0);
   transform-origin: left;

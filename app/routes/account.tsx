@@ -34,64 +34,47 @@ export async function loader({context}: Route.LoaderArgs) {
   );
 }
 
+export const meta: Route.MetaFunction = () => [
+  {title: 'Mon compte | Alone Hair'},
+  {name: 'robots', content: 'noindex, nofollow'},
+];
+
 export default function AccountLayout() {
   const {customer} = useLoaderData<typeof loader>();
-
-  const heading = customer
-    ? customer.firstName
-      ? `Welcome, ${customer.firstName}`
-      : `Welcome to your account.`
-    : 'Account Details';
+  const heading = customer.firstName ? `Bonjour ${customer.firstName}` : 'Mon compte';
 
   return (
-    <div className="account">
-      <h1>{heading}</h1>
-      <br />
+    <div className="account container">
+      <header className="account__head">
+        <p className="eyebrow">Espace client</p>
+        <h1 className="h1">{heading}</h1>
+      </header>
       <AccountMenu />
-      <br />
-      <br />
-      <Outlet context={{customer}} />
+      <div className="account__body">
+        <Outlet context={{customer}} />
+      </div>
     </div>
   );
 }
 
 function AccountMenu() {
-  function isActiveStyle({
-    isActive,
-    isPending,
-  }: {
-    isActive: boolean;
-    isPending: boolean;
-  }) {
-    return {
-      fontWeight: isActive ? 'bold' : undefined,
-      color: isPending ? 'grey' : 'black',
-    };
-  }
-
+  const links = [
+    {to: '/account/orders', label: 'Commandes'},
+    {to: '/account/profile', label: 'Profil'},
+    {to: '/account/addresses', label: 'Adresses'},
+  ];
   return (
-    <nav role="navigation">
-      <NavLink to="/account/orders" style={isActiveStyle}>
-        Orders &nbsp;
-      </NavLink>
-      &nbsp;|&nbsp;
-      <NavLink to="/account/profile" style={isActiveStyle}>
-        &nbsp; Profile &nbsp;
-      </NavLink>
-      &nbsp;|&nbsp;
-      <NavLink to="/account/addresses" style={isActiveStyle}>
-        &nbsp; Addresses &nbsp;
-      </NavLink>
-      &nbsp;|&nbsp;
-      <Logout />
+    <nav className="account__nav" aria-label="Espace client">
+      {links.map((l) => (
+        <NavLink key={l.to} to={l.to} className="account__tab" prefetch="intent">
+          {l.label}
+        </NavLink>
+      ))}
+      <Form className="account__logout" method="POST" action="/account/logout">
+        <button type="submit" className="account__tab">
+          Se déconnecter
+        </button>
+      </Form>
     </nav>
-  );
-}
-
-function Logout() {
-  return (
-    <Form className="account-logout" method="POST" action="/account/logout">
-      &nbsp;<button type="submit">Sign out</button>
-    </Form>
   );
 }

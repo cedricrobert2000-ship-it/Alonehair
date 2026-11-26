@@ -273,9 +273,10 @@
 
   /* Écran de chargement */
   --intro-duration: 1100ms;
-  --intro-word-size: clamp(2.5rem, 1.4rem + 5vw, 6rem); /* 40 → 96 */
+  --intro-word-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.5rem); /* 24 → 40 */
   --intro-letter-stagger: 45ms;
-  --intro-bar-w: min(40vw, 12rem);
+  --intro-bar-w: min(36vw, 9rem);
+  --intro-line: 0.5px; /* trait simple, aussi fin que le contour ovale de l'accueil */
 
   /* Collection */
   --plp-side-w: 240px;

@@ -427,6 +427,16 @@ main:focus {
   overflow: hidden;
 }
 
+.cart-line__placeholder {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  color: var(--color-ink-soft);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+}
+
 .cart-line__media img {
   width: 100%;
   height: 100%;

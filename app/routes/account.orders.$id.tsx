@@ -1,6 +1,8 @@
 import {redirect, useLoaderData} from 'react-router';
 import type {Route} from './+types/account.orders.$id';
 import {Money, Image} from '@shopify/hydrogen';
+import {TextLink} from '~/components/ui/TextLink';
+import {formatDate, fulfillmentLabel} from '~/lib/account';
 import type {
   OrderLineItemFullFragment,
   OrderQuery,
@@ -8,7 +10,7 @@ import type {
 import {CUSTOMER_ORDER_QUERY} from '~/graphql/customer-account/CustomerOrderQuery';
 
 export const meta: Route.MetaFunction = ({data}) => {
-  return [{title: `Order ${data?.order?.name}`}];
+  return [{title: `Commande ${data?.order?.name ?? ''} | Alone Hair`}, {name: 'robots', content: 'noindex, nofollow'}];
 };
 
 export async function loader({params, context}: Route.LoaderArgs) {
@@ -27,7 +29,7 @@ export async function loader({params, context}: Route.LoaderArgs) {
     });
 
   if (errors?.length || !data?.order) {
-    throw new Error('Order not found');
+    throw new Error('Commande introuvable');
   }
 
   const {order} = data;
@@ -39,7 +41,7 @@ export async function loader({params, context}: Route.LoaderArgs) {
   const discountApplications = order.discountApplications.nodes;
 
   // Get fulfillment status from first fulfillment node
-  const fulfillmentStatus = order.fulfillments.nodes[0]?.status ?? 'N/A';
+  const fulfillmentStatus = order.fulfillments.nodes[0]?.status ?? null;
 
   // Get first discount value with proper type checking
   const firstDiscount = discountApplications[0]?.value;
@@ -74,149 +76,98 @@ export async function loader({params, context}: Route.LoaderArgs) {
 }
 
 export default function OrderRoute() {
-  const {
-    order,
-    lineItems,
-    discountValue,
-    discountPercentage,
-    fulfillmentStatus,
-  } = useLoaderData<typeof loader>();
+  const {order, lineItems, discountValue, discountPercentage, fulfillmentStatus} =
+    useLoaderData<typeof loader>();
+  const hasDiscount = Boolean((discountValue && Number(discountValue.amount) > 0) || discountPercentage);
+
   return (
-    <div className="account-order">
-      <h2>Order {order.name}</h2>
-      <p>Placed on {new Date(order.processedAt!).toDateString()}</p>
-      {order.confirmationNumber && (
-        <p>Confirmation: {order.confirmationNumber}</p>
-      )}
-      <br />
-      <div>
-        <table>
-          <thead>
-            <tr>
-              <th scope="col">Product</th>
-              <th scope="col">Price</th>
-              <th scope="col">Quantity</th>
-              <th scope="col">Total</th>
-            </tr>
-          </thead>
-          <tbody>
-            {lineItems.map((lineItem, lineItemIndex) => (
-              // eslint-disable-next-line react/no-array-index-key
-              <OrderLineRow key={lineItemIndex} lineItem={lineItem} />
-            ))}
-          </tbody>
-          <tfoot>
-            {((discountValue && discountValue.amount) ||
-              discountPercentage) && (
-              <tr>
-                <th scope="row" colSpan={3}>
-                  <p>Discounts</p>
-                </th>
-                <th scope="row">
-                  <p>Discounts</p>
-                </th>
-                <td>
-                  {discountPercentage ? (
-                    <span>-{discountPercentage}% OFF</span>
-                  ) : (
-                    discountValue && <Money data={discountValue!} />
-                  )}
-                </td>
-              </tr>
-            )}
-            <tr>
-              <th scope="row" colSpan={3}>
-                <p>Subtotal</p>
-              </th>
-              <th scope="row">
-                <p>Subtotal</p>
-              </th>
-              <td>
-                <Money data={order.subtotal!} />
-              </td>
-            </tr>
-            <tr>
-              <th scope="row" colSpan={3}>
-                Tax
-              </th>
-              <th scope="row">
-                <p>Tax</p>
-              </th>
-              <td>
-                <Money data={order.totalTax!} />
-              </td>
-            </tr>
-            <tr>
-              <th scope="row" colSpan={3}>
-                Total
-              </th>
-              <th scope="row">
-                <p>Total</p>
-              </th>
-              <td>
-                <Money data={order.totalPrice!} />
-              </td>
-            </tr>
-          </tfoot>
-        </table>
+    <section className="account-section account-order" aria-labelledby="order-title">
+      <p>
+        <TextLink to="/account/orders">Toutes mes commandes</TextLink>
+      </p>
+      <h2 id="order-title" className="account-section__title">
+        Commande {order.name}
+      </h2>
+      <p className="order-card__meta">
+        Passée le {formatDate(order.processedAt)}
+        {order.confirmationNumber ? ` · Confirmation ${order.confirmationNumber}` : ''}
+      </p>
+      <ul className="order-card__status">
+        <li className="badge">{fulfillmentLabel(fulfillmentStatus)}</li>
+      </ul>
+
+      <div className="account-order__grid">
         <div>
-          <h3>Shipping Address</h3>
-          {order?.shippingAddress ? (
-            <address>
-              <p>{order.shippingAddress.name}</p>
-              {order.shippingAddress.formatted ? (
-                <p>{order.shippingAddress.formatted}</p>
-              ) : (
-                ''
-              )}
-              {order.shippingAddress.formattedArea ? (
-                <p>{order.shippingAddress.formattedArea}</p>
-              ) : (
-                ''
-              )}
+          <h3 className="sr-only">Articles</h3>
+          <ul className="order-lines">
+            {lineItems.map((lineItem, i) => (
+              <OrderLine key={lineItem.id ?? i} lineItem={lineItem} />
+            ))}
+          </ul>
+
+          <dl className="order-totals">
+            <div>
+              <dt>Sous-total</dt>
+              <dd>
+                <Money data={order.subtotal!} />
+              </dd>
+            </div>
+            {hasDiscount && (
+              <div>
+                <dt>Réduction</dt>
+                <dd>{discountPercentage ? `−${discountPercentage} %` : discountValue && <Money data={discountValue} />}</dd>
+              </div>
+            )}
+            {order.totalTax && Number(order.totalTax.amount) > 0 && (
+              <div>
+                <dt>Dont TVA</dt>
+                <dd>
+                  <Money data={order.totalTax} />
+                </dd>
+              </div>
+            )}
+            <div className="order-totals__total">
+              <dt>Total</dt>
+              <dd>
+                <Money data={order.totalPrice!} />
+              </dd>
+            </div>
+          </dl>
+        </div>
+
+        <aside className="account-order__aside">
+          <h3 className="eyebrow">Adresse de livraison</h3>
+          {order.shippingAddress ? (
+            <address className="account-address">
+              {order.shippingAddress.formatted?.map((line) => <p key={line}>{line}</p>)}
             </address>
           ) : (
-            <p>No shipping address defined</p>
+            <p className="account-muted">Aucune adresse de livraison (retrait en boutique).</p>
           )}
-          <h3>Status</h3>
-          <div>
-            <p>{fulfillmentStatus}</p>
-          </div>
-        </div>
+          <a className="btn btn--secondary btn--block" href={order.statusPageUrl} target="_blank" rel="noreferrer">
+            <span className="btn__label">Suivre ma commande</span>
+            <span className="sr-only"> (nouvel onglet)</span>
+          </a>
+        </aside>
       </div>
-      <br />
-      <p>
-        <a target="_blank" href={order.statusPageUrl} rel="noreferrer">
-          View Order Status →
-        </a>
-      </p>
-    </div>
+    </section>
   );
 }
 
-function OrderLineRow({lineItem}: {lineItem: OrderLineItemFullFragment}) {
+function OrderLine({lineItem}: {lineItem: OrderLineItemFullFragment}) {
   return (
-    <tr key={lineItem.id}>
-      <td>
-        <div>
-          {lineItem?.image && (
-            <div>
-              <Image data={lineItem.image} width={96} height={96} />
-            </div>
-          )}
-          <div>
-            <p>{lineItem.title}</p>
-            <small>{lineItem.variantTitle}</small>
-          </div>
-        </div>
-      </td>
-      <td>
+    <li className="order-line">
+      <div className="order-line__img">
+        {lineItem.image && <Image data={lineItem.image} width={96} aspectRatio="3/4" sizes="96px" />}
+      </div>
+      <div className="order-line__info">
+        <p className="order-line__title">{lineItem.title}</p>
+        {lineItem.variantTitle && <p className="account-muted">{lineItem.variantTitle}</p>}
+        <p className="account-muted">Quantité : {lineItem.quantity}</p>
+      </div>
+      <p className="order-line__price">
         <Money data={lineItem.price!} />
-      </td>
-      <td>{lineItem.quantity}</td>
-      <td>
-        <Money data={lineItem.totalDiscount!} />
-      </td>
-    </tr>
+      </p>
+    </li>
   );
 }

@@ -29,7 +29,13 @@ export function CartLineItem({
   return (
     <li className="cart-line">
       <div className="cart-line__media">
-        {image && <Image alt={image.altText ?? title} aspectRatio="3/4" data={image} width={96} loading="lazy" />}
+        {image ? (
+          <Image alt={image.altText ?? title} aspectRatio="3/4" data={image} width={96} loading="lazy" />
+        ) : (
+          <span className="cart-line__placeholder" aria-hidden="true">
+            Option
+          </span>
+        )}
       </div>
       <div className="cart-line__info">
         <Link

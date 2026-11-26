@@ -26,10 +26,10 @@ export function PaginatedResourceSection<NodesType>({
           <div>
             <PreviousLink>
               {isLoading ? (
-                'Loading...'
+                'Chargement…'
               ) : (
                 <span>
-                  <span aria-hidden="true">↑</span> Load previous
+                  <span aria-hidden="true">↑</span> Voir les précédents
                 </span>
               )}
             </PreviousLink>
@@ -46,10 +46,10 @@ export function PaginatedResourceSection<NodesType>({
             )}
             <NextLink>
               {isLoading ? (
-                'Loading...'
+                'Chargement…'
               ) : (
                 <span>
-                  Load more <span aria-hidden="true">↓</span>
+                  Voir plus <span aria-hidden="true">↓</span>
                 </span>
               )}
             </NextLink>

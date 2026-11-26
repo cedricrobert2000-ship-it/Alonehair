@@ -9,6 +9,8 @@ import {
   useOutletContext,
 } from 'react-router';
 import type {Route} from './+types/account.profile';
+import {Button} from '~/components/ui/Button';
+import {TextField} from '~/components/ui/Field';
 
 export type ActionResponse = {
   error: string | null;
@@ -16,7 +18,7 @@ export type ActionResponse = {
 };
 
 export const meta: Route.MetaFunction = () => {
-  return [{title: 'Profile'}];
+  return [{title: 'Mon profil | Alone Hair'}, {name: 'robots', content: 'noindex, nofollow'}];
 };
 
 export async function loader({context}: Route.LoaderArgs) {
@@ -29,7 +31,7 @@ export async function action({request, context}: Route.ActionArgs) {
   const {customerAccount} = context;
 
   if (request.method !== 'PUT') {
-    return data({error: 'Method not allowed'}, {status: 405});
+    return data({error: 'Action non autorisée.'}, {status: 405});
   }
 
   const form = await request.formData();
@@ -62,7 +64,7 @@ export async function action({request, context}: Route.ActionArgs) {
     }
 
     if (!data?.customerUpdate?.customer) {
-      throw new Error('Customer profile update failed.');
+      throw new Error('La mise à jour du profil a échoué. Réessayez dans un instant.');
     }
 
     return {
@@ -84,50 +86,35 @@ export default function AccountProfile() {
   const {state} = useNavigation();
   const action = useActionData<ActionResponse>();
   const customer = action?.customer ?? account?.customer;
+  const saved = action && !action.error && state === 'idle';
 
   return (
-    <div className="account-profile">
-      <h2>My profile</h2>
-      <br />
-      <Form method="PUT">
-        <legend>Personal information</legend>
-        <fieldset>
-          <label htmlFor="firstName">First name</label>
-          <input
-            id="firstName"
-            name="firstName"
-            type="text"
-            autoComplete="given-name"
-            placeholder="First name"
-            aria-label="First name"
-            defaultValue={customer.firstName ?? ''}
-            minLength={2}
-          />
-          <label htmlFor="lastName">Last name</label>
-          <input
-            id="lastName"
-            name="lastName"
-            type="text"
-            autoComplete="family-name"
-            placeholder="Last name"
-            aria-label="Last name"
-            defaultValue={customer.lastName ?? ''}
-            minLength={2}
-          />
-        </fieldset>
-        {action?.error ? (
-          <p>
-            <mark>
-              <small>{action.error}</small>
-            </mark>
+    <section className="account-section" aria-labelledby="profile-title">
+      <h2 id="profile-title" className="account-section__title">Mon profil</h2>
+      <Form method="PUT" className="account-form">
+        <div className="account-form__grid">
+          <TextField label="Prénom" name="firstName" autoComplete="given-name" defaultValue={customer.firstName ?? ''} minLength={2} />
+          <TextField label="Nom" name="lastName" autoComplete="family-name" defaultValue={customer.lastName ?? ''} minLength={2} />
+        </div>
+        {action?.error && (
+          <p className="field__error" role="alert">
+            {action.error}
           </p>
-        ) : (
-          <br />
         )}
-        <button type="submit" disabled={state !== 'idle'}>
-          {state !== 'idle' ? 'Updating' : 'Update'}
-        </button>
+        {saved && (
+          <p className="account-success" role="status">
+            Vos informations sont enregistrées.
+          </p>
+        )}
+        <div>
+          <Button type="submit" loading={state !== 'idle'}>
+            Enregistrer
+          </Button>
+        </div>
       </Form>
-    </div>
+      <p className="account-muted">
+        Votre adresse e-mail sert à vous connecter : elle se modifie depuis la page de connexion Shopify.
+      </p>
+    </section>
   );
 }

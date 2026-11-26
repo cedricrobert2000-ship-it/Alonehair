@@ -38,10 +38,10 @@ export async function loader({context, request}: Route.LoaderArgs) {
     page: data.page,
     origin,
     url: `${origin}/pages/a-propos`,
-    promises: data.promises.nodes
+    promises: (data.promises?.nodes ?? [])
       .map((n) => ({handle: n.handle, title: field(n, 'title'), text: field(n, 'text')}))
       .filter((p) => p.title),
-    reviews: data.reviews.nodes
+    reviews: (data.reviews?.nodes ?? [])
       .map((n) => ({
         id: n.id,
         author: field(n, 'author'),

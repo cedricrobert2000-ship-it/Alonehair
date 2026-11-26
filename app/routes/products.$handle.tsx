@@ -99,7 +99,7 @@ async function loadCriticalData({context, params, request}: Route.LoaderArgs) {
     product,
     layers: layers?.variants.nodes[0] ?? null,
     entretienHtml: entretien?.body ?? '',
-    promises: promises.nodes,
+    promises: promises?.nodes ?? [],
     shop,
     crumbs,
     origin,
@@ -173,10 +173,12 @@ export default function Product() {
       : null;
   const showLayers = isWig && layers?.availableForSale;
 
+  // Le panier affiche la dernière ligne envoyée en premier : l'option Layers
+  // part en premier pour que la perruque apparaisse au-dessus.
   const lines = selectedVariant
     ? [
-        {merchandiseId: selectedVariant.id, quantity: 1, selectedVariant},
         ...(showLayers && withLayers && layers ? [{merchandiseId: layers.id, quantity: 1}] : []),
+        {merchandiseId: selectedVariant.id, quantity: 1, selectedVariant},
       ]
     : [];
 
@@ -389,8 +391,9 @@ export default function Product() {
               <Section wide>
                 <SectionHead title="Vous aimerez aussi" />
                 <ul className="product-grid" data-reveal-group>
-                  {products.map((p) => (
-                    <li key={p.id}>
+                  {products.map((p, i) => (
+                    // --i posé aussi par RevealObserver : même valeur côté serveur (pas d'écart d'hydratation)
+                    <li key={p.id} style={{'--i': i} as React.CSSProperties}>
                       <ProductCard product={p} />
                     </li>
                   ))}

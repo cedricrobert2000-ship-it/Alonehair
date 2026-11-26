@@ -1,11 +1,8 @@
-import {
-  Link,
-  useLoaderData,
-  useNavigation,
-  useSearchParams,
-} from 'react-router';
+import {Link, useLoaderData} from 'react-router';
 import type {Route} from './+types/account.orders._index';
-import {useRef} from 'react';
+import {Button} from '~/components/ui/Button';
+import {TextLink} from '~/components/ui/TextLink';
+import {financialLabel, fulfillmentLabel, formatDate} from '~/lib/account';
 import {
   Money,
   getPaginationVariables,
@@ -14,7 +11,6 @@ import {
 import {
   buildOrderSearchQuery,
   parseOrderFilters,
-  ORDER_FILTER_FIELDS,
   type OrderFilterParams,
 } from '~/lib/orderFilters';
 import {CUSTOMER_ORDERS_QUERY} from '~/graphql/customer-account/CustomerOrdersQuery';
@@ -30,7 +26,7 @@ type OrdersLoaderData = {
 };
 
 export const meta: Route.MetaFunction = () => {
-  return [{title: 'Orders'}];
+  return [{title: 'Mes commandes | Alone Hair'}, {name: 'robots', content: 'noindex, nofollow'}];
 };
 
 export async function loader({request, context}: Route.LoaderArgs) {
@@ -52,7 +48,7 @@ export async function loader({request, context}: Route.LoaderArgs) {
   });
 
   if (errors?.length || !data?.customer) {
-    throw Error('Customer orders not found');
+    throw Error('Commandes introuvables');
   }
 
   return {customer: data.customer, filters};
@@ -61,162 +57,60 @@ export async function loader({request, context}: Route.LoaderArgs) {
 export default function Orders() {
   const {customer, filters} = useLoaderData<OrdersLoaderData>();
   const {orders} = customer;
-
-  return (
-    <div className="orders">
-      <OrderSearchForm currentFilters={filters} />
-      <OrdersTable orders={orders} filters={filters} />
-    </div>
-  );
-}
-
-function OrdersTable({
-  orders,
-  filters,
-}: {
-  orders: CustomerOrdersFragment['orders'];
-  filters: OrderFilterParams;
-}) {
   const hasFilters = !!(filters.name || filters.confirmationNumber);
 
   return (
-    <div className="acccount-orders" aria-live="polite">
-      {orders?.nodes.length ? (
-        <PaginatedResourceSection connection={orders}>
-          {({node: order}) => <OrderItem key={order.id} order={order} />}
-        </PaginatedResourceSection>
-      ) : (
-        <EmptyOrders hasFilters={hasFilters} />
-      )}
-    </div>
+    <section className="account-section" aria-labelledby="orders-title">
+      <h2 id="orders-title" className="account-section__title">Mes commandes</h2>
+      <div aria-live="polite">
+        {orders?.nodes.length ? (
+          <PaginatedResourceSection connection={orders} resourcesClassName="order-list" ariaLabel="Commandes">
+            {({node: order}) => <OrderItem key={order.id} order={order} />}
+          </PaginatedResourceSection>
+        ) : (
+          <EmptyOrders hasFilters={hasFilters} />
+        )}
+      </div>
+    </section>
   );
 }
 
 function EmptyOrders({hasFilters = false}: {hasFilters?: boolean}) {
-  return (
-    <div>
-      {hasFilters ? (
-        <>
-          <p>No orders found matching your search.</p>
-          <br />
-          <p>
-            <Link to="/account/orders">Clear filters →</Link>
-          </p>
-        </>
-      ) : (
-        <>
-          <p>You haven&apos;t placed any orders yet.</p>
-          <br />
-          <p>
-            <Link to="/collections">Start Shopping →</Link>
-          </p>
-        </>
-      )}
+  return hasFilters ? (
+    <div className="account-empty">
+      <p>Aucune commande ne correspond à cette recherche.</p>
+      <TextLink to="/account/orders">Voir toutes mes commandes</TextLink>
     </div>
-  );
-}
-
-function OrderSearchForm({
-  currentFilters,
-}: {
-  currentFilters: OrderFilterParams;
-}) {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const navigation = useNavigation();
-  const isSearching =
-    navigation.state !== 'idle' &&
-    navigation.location?.pathname?.includes('orders');
-  const formRef = useRef<HTMLFormElement>(null);
-
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    const params = new URLSearchParams();
-
-    const name = formData.get(ORDER_FILTER_FIELDS.NAME)?.toString().trim();
-    const confirmationNumber = formData
-      .get(ORDER_FILTER_FIELDS.CONFIRMATION_NUMBER)
-      ?.toString()
-      .trim();
-
-    if (name) params.set(ORDER_FILTER_FIELDS.NAME, name);
-    if (confirmationNumber)
-      params.set(ORDER_FILTER_FIELDS.CONFIRMATION_NUMBER, confirmationNumber);
-
-    setSearchParams(params);
-  };
-
-  const hasFilters = currentFilters.name || currentFilters.confirmationNumber;
-
-  return (
-    <form
-      ref={formRef}
-      onSubmit={handleSubmit}
-      className="order-search-form"
-      aria-label="Search orders"
-    >
-      <fieldset className="order-search-fieldset">
-        <legend className="order-search-legend">Filter Orders</legend>
-
-        <div className="order-search-inputs">
-          <input
-            type="search"
-            name={ORDER_FILTER_FIELDS.NAME}
-            placeholder="Order #"
-            aria-label="Order number"
-            defaultValue={currentFilters.name || ''}
-            className="order-search-input"
-          />
-          <input
-            type="search"
-            name={ORDER_FILTER_FIELDS.CONFIRMATION_NUMBER}
-            placeholder="Confirmation #"
-            aria-label="Confirmation number"
-            defaultValue={currentFilters.confirmationNumber || ''}
-            className="order-search-input"
-          />
-        </div>
-
-        <div className="order-search-buttons">
-          <button type="submit" disabled={isSearching}>
-            {isSearching ? 'Searching' : 'Search'}
-          </button>
-          {hasFilters && (
-            <button
-              type="button"
-              disabled={isSearching}
-              onClick={() => {
-                setSearchParams(new URLSearchParams());
-                formRef.current?.reset();
-              }}
-            >
-              Clear
-            </button>
-          )}
-        </div>
-      </fieldset>
-    </form>
+  ) : (
+    <div className="account-empty">
+      <p>Vous n’avez pas encore passé de commande.</p>
+      <Button to="/collections/perruques">Découvrir nos perruques</Button>
+    </div>
   );
 }
 
 function OrderItem({order}: {order: OrderItemFragment}) {
   const fulfillmentStatus = flattenConnection(order.fulfillments)[0]?.status;
+  const to = `/account/orders/${btoa(order.id)}`;
   return (
-    <>
-      <fieldset>
-        <Link to={`/account/orders/${btoa(order.id)}`}>
-          <strong>#{order.number}</strong>
-        </Link>
-        <p>{new Date(order.processedAt).toDateString()}</p>
-        {order.confirmationNumber && (
-          <p>Confirmation: {order.confirmationNumber}</p>
-        )}
-        <p>{order.financialStatus}</p>
-        {fulfillmentStatus && <p>{fulfillmentStatus}</p>}
+    <article className="order-card">
+      <div className="order-card__main">
+        <h3 className="order-card__num">
+          <Link to={to}>Commande n° {order.number}</Link>
+        </h3>
+        <p className="order-card__meta">
+          {formatDate(order.processedAt)}
+          {order.confirmationNumber ? ` · Confirmation ${order.confirmationNumber}` : ''}
+        </p>
+      </div>
+      <ul className="order-card__status">
+        {order.financialStatus && <li className="badge">{financialLabel(order.financialStatus)}</li>}
+        <li className="badge">{fulfillmentLabel(fulfillmentStatus)}</li>
+      </ul>
+      <p className="order-card__total">
         <Money data={order.totalPrice} />
-        <Link to={`/account/orders/${btoa(order.id)}`}>View Order →</Link>
-      </fieldset>
-      <br />
-    </>
+      </p>
+      <TextLink to={to}>Voir le détail</TextLink>
+    </article>
   );
 }

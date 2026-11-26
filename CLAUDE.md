@@ -149,4 +149,4 @@ Ajouter pour chaque page : `<title>` et meta description venant du champ SEO Sho
 - `main` → environnement **Production** sur Oxygen (pas relié au domaine tant que les propriétaires n'ont pas validé).
 - Autres branches → aperçus. Pour montrer un aperçu sans compte : page du déploiement → **Partager** → « Toute personne disposant du lien ».
 - Les aperçus utilisent les **vrais produits et le vrai paiement** : ne pas passer de commande de test sans prévenir.
-- Bascule finale : Paramètres → Domaines → relier alonehair.com au storefront Hydrogen. L'ancien thème reste disponible pour revenir en arrière.
+- Bascule finale : suivre `docs/MISE-EN-LIGNE.md` (sous-domaine `checkout.alonehair.com` pour le paiement, puis alonehair.com → storefront Hydrogen). L'ancien thème reste disponible pour revenir en arrière.

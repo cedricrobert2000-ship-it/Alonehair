@@ -79,7 +79,7 @@ const fieldOf = (fields: Fields | undefined, key: string) => fields?.find((f) =>
 
 export default function Homepage() {
   const data = useLoaderData<typeof loader>();
-  const promises = data.promises.nodes.flatMap((n) => {
+  const promises = (data.promises?.nodes ?? []).flatMap((n) => {
     const title = fieldOf(n.fields, 'title')?.value;
     return title ? [{handle: n.handle, title, text: fieldOf(n.fields, 'text')?.value}] : [];
   });
@@ -314,7 +314,7 @@ function TikTokWall({data}: {data: Data}) {
 
 /* ------------------------------------------------------------------- Avis */
 function Reviews({data}: {data: Data}) {
-  const reviews = data.reviews.nodes
+  const reviews = (data.reviews?.nodes ?? [])
     .map((n) => ({
       id: n.id,
       author: fieldOf(n.fields, 'author')?.value,
