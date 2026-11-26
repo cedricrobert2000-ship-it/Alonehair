@@ -7,7 +7,6 @@ import {
   getProductOptions,
   getSelectedProductOptions,
   useOptimisticVariant,
-  useSelectedOptionInUrlParam,
 } from '@shopify/hydrogen';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {
@@ -25,9 +24,10 @@ import {
 } from '~/components/ui';
 import {ProductGallery, type GalleryMedia} from '~/components/product/ProductGallery';
 import {AddToCart} from '~/components/product/AddToCart';
-import {formatMoney} from '~/lib/format';
+import {formatMoney, formatPriceRange} from '~/lib/format';
 import {findShade, sectionByTitle, splitDescription, tiktokId} from '~/lib/product';
 import {breadcrumbLd, seoMeta, stripHtml} from '~/lib/seo';
+import {ENTRETIEN} from '~/content/pages';
 
 /** Produit non listé ajouté au panier quand la cliente coche « Layers ». */
 const LAYERS_HANDLE = 'option-layers';
@@ -86,6 +86,8 @@ async function loadCriticalData({context, params, request}: Route.LoaderArgs) {
   redirectIfHandleIsLocalized(request, {handle, data: product});
 
   const origin = new URL(request.url).origin;
+  // Lien avec des options (partagé, retour de panier…) : elles comptent comme choisies
+  const preselected = getSelectedProductOptions(request).length > 0;
   const collection = product.collections.nodes.find((c) => !SKIP_BREADCRUMB.includes(c.handle));
   const crumbs = [
     {name: 'Accueil', path: '/'},
@@ -102,6 +104,7 @@ async function loadCriticalData({context, params, request}: Route.LoaderArgs) {
     crumbs,
     origin,
     canonical: `${origin}/products/${product.handle}`,
+    preselected,
   };
 }
 
@@ -114,14 +117,41 @@ function loadDeferredData({context, params}: Route.LoaderArgs) {
 }
 
 export default function Product() {
-  const {product, layers, entretienHtml, promises, shop, crumbs, recommended} = useLoaderData<typeof loader>();
+  const {product, layers, entretienHtml, promises, shop, crumbs, recommended, preselected} = useLoaderData<typeof loader>();
 
   const selectedVariant = useOptimisticVariant(
     product.selectedOrFirstAvailableVariant,
     getAdjacentAndFirstAvailableVariants(product),
   );
-  useSelectedOptionInUrlParam(selectedVariant.selectedOptions);
+  // (pas de useSelectedOptionInUrlParam : l'URL ne reçoit des options que quand la cliente choisit)
   const productOptions = getProductOptions({...product, selectedOrFirstAvailableVariant: selectedVariant});
+
+  // Options réellement choisies : une seule valeur possible = déjà choisie
+  const multi = product.options.filter((o) => o.optionValues.length > 1).map((o) => o.name);
+  const [chosen, setChosen] = useState<Set<string>>(() => new Set(preselected ? multi : []));
+  const [showMissing, setShowMissing] = useState(false);
+  useEffect(() => {
+    // nouvelle fiche produit (navigation interne) : on repart de zéro
+    setChosen(new Set(preselected ? multi : []));
+    setShowMissing(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [product.id]);
+  const missingNames = multi.filter((n) => !chosen.has(n));
+  const missing = new Set(showMissing ? missingNames : []);
+  const complete = missingNames.length === 0;
+  const choose = (name: string) =>
+    setChosen((prev) => {
+      const next = new Set(prev);
+      next.add(name);
+      return next;
+    });
+  const askMissing = () => {
+    setShowMissing(true);
+    const first = missingNames[0];
+    const el = first ? document.getElementById(`opt-${first.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-')}`) : null;
+    el?.scrollIntoView({behavior: 'smooth', block: 'center'});
+    el?.querySelector<HTMLElement>('select, a')?.focus({preventScroll: true});
+  };
 
   const sections = splitDescription(product.descriptionHtml);
   const intro = sections.find((s) => !s.title);
@@ -171,7 +201,13 @@ export default function Product() {
     return () => io.disconnect();
   }, []);
 
-  const buyLabel = available ? 'Ajouter au panier' : 'Épuisé';
+  const buyLabel = !complete
+    ? missingNames.length > 1
+      ? 'Choisir les options'
+      : `Choisir ${/^(longueur|taille|couleur)/i.test(missingNames[0]) ? 'la' : 'le'} ${missingNames[0].toLowerCase()}`
+    : available
+      ? 'Ajouter au panier'
+      : 'Épuisé';
   const analytics = {
     products: [
       {
@@ -191,7 +227,7 @@ export default function Product() {
   return (
     <div className="pdp">
       <div className="pdp__main container container--wide">
-        <ProductGallery media={media} activeUrl={selectedVariant?.image?.url} title={product.title} />
+        <ProductGallery media={media} activeUrl={chosen.size ? selectedVariant?.image?.url : null} title={product.title} />
 
         <div className="pdp__info">
           <nav className="breadcrumb" aria-label="Fil d'Ariane">
@@ -205,16 +241,22 @@ export default function Product() {
           </nav>
 
           <div className="pdp__head">
-            <h1 className="h3 pdp__title">{product.title}</h1>
-            {shade && <p className="text-soft pdp__shade">{shade}</p>}
+            <h1 className="pdp__title">{product.title}</h1>
+            {shade && <p className="pdp__shade accent">{shade}</p>}
             <p className="pdp__price" aria-live="polite">
-              {compareAt && <s>{formatMoney(compareAt)}</s>}
-              <span>{formatMoney(price)}</span>
-              {!available && <Badge dark>Épuisé</Badge>}
+              {complete ? (
+                <>
+                  {compareAt && <s>{formatMoney(compareAt)}</s>}
+                  <span>{formatMoney(price)}</span>
+                  {!available && <Badge dark>Épuisé</Badge>}
+                </>
+              ) : (
+                <span>{formatPriceRange(product.priceRange)}</span>
+              )}
             </p>
           </div>
 
-          <VariantOptions options={productOptions} />
+          <VariantOptions options={productOptions} chosen={chosen} missing={missing} onChoose={choose} />
 
           {isWig && (
             <div className="pdp__cap">
@@ -235,10 +277,23 @@ export default function Product() {
           )}
 
           <div ref={buyRef} className="pdp__buy">
-            <AddToCart lines={lines} disabled={!available} label={buyLabel} analytics={analytics} />
-            <p className="pdp__made text-sm">
-              <span aria-hidden="true">—</span> Faite main, sur commande.
-            </p>
+            <AddToCart
+              lines={lines}
+              disabled={complete && !available}
+              blocked={!complete}
+              onBlocked={askMissing}
+              label={buyLabel}
+              analytics={analytics}
+            />
+            <ul className="pdp__assurance">
+              <li>Faite main, sur commande</li>
+              {promiseList(promises)
+                .filter((p) => !/main/i.test(p.title!))
+                .slice(0, 2)
+                .map((p) => (
+                  <li key={p.title}>{p.title}</li>
+                ))}
+            </ul>
           </div>
 
           <div className="pdp__tabs">
@@ -267,11 +322,27 @@ export default function Product() {
                 <div className="prose rte" dangerouslySetInnerHTML={{__html: s.html}} />
               </Accordion>
             ))}
-            {stripHtml(entretienHtml) && (
-              <Accordion title="Entretien" group="pdp">
+            <Accordion title="Entretien" group="pdp">
+              {stripHtml(entretienHtml) ? (
                 <div className="prose rte" dangerouslySetInnerHTML={{__html: entretienHtml}} />
-              </Accordion>
-            )}
+              ) : (
+                <div className="prose">
+                  <ul className="specs">
+                    {ENTRETIEN.cards.map((c) => (
+                      <li key={c.number}>
+                        <strong>
+                          {c.title} {c.accent}
+                        </strong>{' '}
+                        — {c.intro}
+                      </li>
+                    ))}
+                  </ul>
+                  <Link className="link" to="/pages/entretien">
+                    Tous nos conseils d’entretien
+                  </Link>
+                </div>
+              )}
+            </Accordion>
             <Accordion title="Livraison et échanges" group="pdp">
               <ShippingAndReturns promises={promises} exchangesHtml={exchanges?.html} policies={policyLinks} />
             </Accordion>
@@ -283,9 +354,16 @@ export default function Product() {
         <div className="pdp-sticky" role="region" aria-label="Ajout rapide au panier">
           <div className="pdp-sticky__info">
             <span className="pdp-sticky__title">{product.title}</span>
-            <span>{formatMoney(price)}</span>
+            <span>{complete ? formatMoney(price) : formatPriceRange(product.priceRange)}</span>
           </div>
-          <AddToCart lines={lines} disabled={!available} label={available ? 'Ajouter' : 'Épuisé'} analytics={analytics} />
+          <AddToCart
+            lines={lines}
+            disabled={complete && !available}
+            blocked={!complete}
+            onBlocked={askMissing}
+            label={!complete ? 'Choisir' : available ? 'Ajouter' : 'Épuisé'}
+            analytics={analytics}
+          />
         </div>
       )}
 

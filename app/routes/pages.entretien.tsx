@@ -45,12 +45,12 @@ export default function Entretien() {
     <article className="content-page-v2">
       <PageIntro title={ENTRETIEN.title} lead={ENTRETIEN.lead} aside={ENTRETIEN.aside} images={ENTRETIEN.strip} />
       <StackCards heading="Les bons gestes" cards={ENTRETIEN.cards} />
-      <Manifesto eyebrow={ENTRETIEN.manifesto.eyebrow} text={ENTRETIEN.manifesto.text} signature={ENTRETIEN.manifesto.signature}>
+      <Manifesto variant="light" eyebrow={ENTRETIEN.manifesto.eyebrow} text={ENTRETIEN.manifesto.text} signature={ENTRETIEN.manifesto.signature}>
         <div className="manifesto__ctas">
-          <Button to="/collections/soins-des-cheveux" variant="light">
+          <Button to="/collections/soins-des-cheveux">
             Nos soins
           </Button>
-          <Button to="/pages/contact" variant="secondary" className="btn--on-deep">
+          <Button to="/pages/contact" variant="secondary">
             Demander une retouche
           </Button>
         </div>

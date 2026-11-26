@@ -303,8 +303,8 @@ main:focus {
 }
 
 /* ------------------------------------------------------- Pied de page */
-/* Panneau noir profond qui s'ouvre au défilement (DarkPanel), grand appel
-   à écrire, colonnes de liens, « ALONE HAIR » géant façon Organic Care */
+/* Panneau noir profond qui s'ouvre au défilement (DarkPanel),
+   colonnes de liens, « ALONE HAIR » géant façon Organic Care */
 .site-footer {
   padding-block: var(--section-y) var(--space-6);
 }
@@ -318,35 +318,6 @@ main:focus {
   text-underline-offset: var(--underline-offset);
 }
 
-.site-footer__cta {
-  display: grid;
-  justify-items: start;
-  gap: var(--space-5);
-  padding-bottom: var(--space-16);
-  border-bottom: var(--border-w) solid var(--color-on-deep-line);
-}
-
-.site-footer__big {
-  display: inline-flex;
-  align-items: baseline;
-  gap: var(--space-3);
-  font-family: var(--font-display);
-  font-size: var(--manifesto-size);
-  line-height: var(--leading-tight);
-  letter-spacing: var(--tracking-title);
-}
-
-.site-footer__arrow {
-  font-size: 0.6em;
-  transition: transform var(--dur-roll) var(--ease-out);
-}
-
-@media (hover: hover) {
-  .site-footer__big:hover .site-footer__arrow {
-    transform: translate(var(--arrow-shift), calc(-1 * var(--arrow-shift)));
-  }
-}
-
 .site-footer__cols {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -356,8 +327,28 @@ main:focus {
 
 @media (min-width: 768px) {
   .site-footer__cols {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: 1.4fr repeat(4, minmax(0, 1fr));
   }
+}
+
+.site-footer__brand {
+  display: grid;
+  justify-items: start;
+  align-content: start;
+  gap: var(--space-4);
+  grid-column: 1 / -1;
+}
+
+@media (min-width: 768px) {
+  .site-footer__brand {
+    grid-column: auto;
+  }
+}
+
+.site-footer__about {
+  max-width: var(--qualities-text-w);
+  font-size: var(--text-sm);
+  color: var(--color-on-deep-soft);
 }
 
 .site-footer__title {

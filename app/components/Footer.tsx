@@ -30,21 +30,16 @@ export function Footer({footer: footerPromise, header, publicStoreDomain}: Foote
   return (
     <DarkPanel as="footer" className="site-footer">
       <div className="container">
-        <div className="site-footer__cta" data-reveal>
-          <p className="eyebrow">Une question, une nuance, une commande ?</p>
-          <a className="site-footer__big" href={SOCIALS[0].href} target="_blank" rel="noopener noreferrer">
-            Écrivez-nous sur Instagram
-            <span className="site-footer__arrow" aria-hidden="true">
-              ↗
-            </span>
-            <span className="sr-only"> (nouvel onglet)</span>
-          </a>
-          <Link className="link" to="/pages/contact">
-            Toutes nos coordonnées
-          </Link>
-        </div>
-
         <div className="site-footer__cols">
+          <div className="site-footer__col site-footer__brand">
+            <p className="site-footer__title">Alone Hair</p>
+            <p className="site-footer__about">
+              Perruques et extensions en cheveux 100 % naturels, single donor, faites main, sur commande.
+            </p>
+            <Link className="link link--light" to="/pages/contact">
+              Nous contacter
+            </Link>
+          </div>
           {collections.length > 0 && (
             <FooterCol title="Collections">
               {collections.map((c) => (

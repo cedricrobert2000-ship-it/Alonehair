@@ -661,6 +661,47 @@ html.is-locked body {
   color: var(--color-ink-soft);
 }
 
+/* Option non choisie au moment d'ajouter au panier */
+.vopt.is-missing .vopt__legend {
+  color: var(--color-ink);
+}
+
+.vopt.is-missing .pill:not(.is-missing),
+.vopt.is-missing .vopt__select {
+  border-color: var(--color-ink);
+  animation: shake calc(var(--dur-base) * 0.8) var(--ease-out);
+}
+
+.vopt__error {
+  margin-top: var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+}
+
+.vopt__error::before {
+  content: '— ';
+}
+
+.vopt__select-wrap {
+  max-width: var(--qualities-text-w);
+}
+
+@keyframes shake {
+  25% {
+    transform: translateX(calc(-1 * var(--space-1)));
+  }
+  75% {
+    transform: translateX(var(--space-1));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vopt.is-missing .pill,
+  .vopt.is-missing .vopt__select {
+    animation: none;
+  }
+}
+
 .pill-group {
   display: flex;
   flex-wrap: wrap;

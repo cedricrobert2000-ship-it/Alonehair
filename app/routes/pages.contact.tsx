@@ -82,9 +82,9 @@ export default function Contact() {
         </ul>
       </section>
 
-      <Manifesto eyebrow="Alone Hair" text="Chaque pièce est faite main, sur commande, à partir des cheveux d’un seul donneur. Dites-nous ce que vous imaginez, nous vous guidons jusqu’à la bonne perruque.">
+      <Manifesto variant="light" eyebrow="Alone Hair" text="Chaque pièce est faite main, sur commande, à partir des cheveux d’un seul donneur. Dites-nous ce que vous imaginez, nous vous guidons jusqu’à la bonne perruque.">
         <div className="manifesto__ctas">
-          <Button to="/collections/perruques" variant="light">
+          <Button to="/collections/perruques">
             Voir les perruques
           </Button>
         </div>

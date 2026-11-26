@@ -100,12 +100,29 @@ export function Manifesto({
   text,
   signature,
   children,
+  variant = 'dark',
 }: {
   eyebrow?: string;
   text: string;
   signature?: string;
   children?: React.ReactNode;
+  /** dark : panneau noir qui s'ouvre (accueil) ; light : bloc clair, citation en italique */
+  variant?: 'dark' | 'light';
 }) {
+  if (variant === 'light') {
+    return (
+      <section className="quote-band" aria-label={eyebrow}>
+        <div className="container">
+          <div className="quote-band__inner" data-reveal>
+            {eyebrow && <p className="eyebrow">{eyebrow}</p>}
+            <p className="quote-band__text accent">{text}</p>
+            {signature && <p className="quote-band__sign">{signature}</p>}
+            {children}
+          </div>
+        </div>
+      </section>
+    );
+  }
   return (
     <DarkPanel className="manifesto">
       <div className="container manifesto__inner">

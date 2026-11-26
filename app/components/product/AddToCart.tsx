@@ -15,17 +15,30 @@ export function AddToCart({
   label,
   analytics,
   className,
+  blocked,
+  onBlocked,
 }: {
   lines: OptimisticCartLineInput[];
   disabled?: boolean;
   label: string;
   analytics?: unknown;
   className?: string;
+  /** vrai tant que toutes les options ne sont pas choisies : rien n'est envoyé */
+  blocked?: boolean;
+  onBlocked?: () => void;
 }) {
   return (
     <CartForm route="/cart" inputs={{lines}} action={CartForm.ACTIONS.LinesAdd}>
       {(fetcher: FetcherWithComponents<unknown>) => (
-        <Submit fetcher={fetcher} disabled={disabled} label={label} analytics={analytics} className={className} />
+        <Submit
+          fetcher={fetcher}
+          disabled={disabled}
+          label={label}
+          analytics={analytics}
+          className={className}
+          blocked={blocked}
+          onBlocked={onBlocked}
+        />
       )}
     </CartForm>
   );
@@ -37,12 +50,16 @@ function Submit({
   label,
   analytics,
   className,
+  blocked,
+  onBlocked,
 }: {
   fetcher: FetcherWithComponents<unknown>;
   disabled?: boolean;
   label: string;
   analytics?: unknown;
   className?: string;
+  blocked?: boolean;
+  onBlocked?: () => void;
 }) {
   const {open} = useAside();
   const wasSubmitting = useRef(false);
@@ -59,7 +76,19 @@ function Submit({
   return (
     <>
       <input name="analytics" type="hidden" value={JSON.stringify(analytics ?? {})} />
-      <Button type="submit" block disabled={disabled} loading={busy} className={className}>
+      <Button
+        type="submit"
+        block
+        disabled={disabled}
+        loading={busy}
+        className={className}
+        onClick={(e) => {
+          if (blocked) {
+            e.preventDefault();
+            onBlocked?.();
+          }
+        }}
+      >
         {label}
       </Button>
     </>

@@ -99,9 +99,9 @@ export default function Faq() {
         </div>
       </div>
 
-      <Manifesto eyebrow="Vous n’avez pas trouvé votre réponse ?" text="Écrivez-nous : nous vous répondons sous 24 heures en semaine, pour une nuance, une longueur ou le suivi de votre commande.">
+      <Manifesto variant="light" eyebrow="Vous n’avez pas trouvé votre réponse ?" text="Écrivez-nous : nous vous répondons sous 24 heures en semaine, pour une nuance, une longueur ou le suivi de votre commande.">
         <div className="manifesto__ctas">
-          <Button to="/pages/contact" variant="light">
+          <Button to="/pages/contact">
             Nous contacter
           </Button>
         </div>
