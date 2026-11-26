@@ -1308,6 +1308,30 @@ html.is-locked body {
   transform: translateX(-100%);
 }
 
+/* Plein écran (menu mobile) : rideau qui descend au lieu d'un panneau latéral */
+.drawer--full .drawer__panel {
+  width: 100%;
+  box-shadow: none;
+  transform: none;
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path var(--dur-base) var(--ease-in-out);
+}
+
+.drawer--full.is-open .drawer__panel {
+  clip-path: inset(0);
+}
+
+.drawer--full .drawer__head {
+  border-bottom: 0;
+}
+
+.drawer--full .drawer__title {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+}
+
 .drawer.is-open .drawer__backdrop {
   opacity: 1;
 }

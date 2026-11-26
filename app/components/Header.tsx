@@ -5,6 +5,7 @@ import type {HeaderQuery, CartApiQueryFragment} from 'storefrontapi.generated';
 import {useAside} from '~/components/Aside';
 import {RollText} from '~/components/ui/RollText';
 import {toPath} from '~/lib/url';
+import {CONTACT} from '~/content/pages';
 
 interface HeaderProps {
   header: HeaderQuery;
@@ -162,6 +163,13 @@ function DesktopItem({item, domains}: {item: MenuItem; domains: Array<string | n
 }
 
 /** Menu mobile plein écran (dans le tiroir de gauche). */
+/**
+ * Menu mobile plein écran :
+ * - les collections en vignettes photo qui défilent au doigt ;
+ * - les pages en grands liens numérotés qui montent l'un après l'autre ;
+ * - en bas : compte, recherche, réseaux et signature de la marque.
+ * Le menu vient de `main-menu` (Shopify), rien n'est codé en dur.
+ */
 export function MobileMenu({
   menu,
   domains,
@@ -169,52 +177,93 @@ export function MobileMenu({
   menu: HeaderQuery['menu'];
   domains: Array<string | null | undefined>;
 }) {
-  const {close} = useAside();
+  const {close, open} = useAside();
   if (!menu) return null;
+
+  const groups = menu.items.filter((i) => i.items?.length);
+  const links = [{id: 'accueil', title: 'Accueil', url: '/'}, ...menu.items.filter((i) => !i.items?.length)];
+  let n = 0;
+
   return (
-    <nav className="mobile-menu" aria-label="Menu principal">
-      <ul>
-        <li>
-          <NavLink to="/" end onClick={close} className="mobile-menu__link">
-            Accueil
-          </NavLink>
-        </li>
-        {menu.items.map((item) =>
-          item.items?.length ? (
-            <li key={item.id}>
-              <details className="accordion mobile-menu__group">
-                <summary className="mobile-menu__link">
-                  {item.title}
-                  <span className="accordion__icon" aria-hidden="true" />
-                </summary>
-                <ul>
-                  {item.items.map((child) => (
-                    <li key={child.id}>
-                      <NavLink to={toPath(child.url, domains)} onClick={close} className="mobile-menu__sublink">
-                        {child.title}
-                      </NavLink>
-                    </li>
-                  ))}
-                </ul>
-              </details>
-            </li>
-          ) : (
-            <li key={item.id}>
-              <NavLink to={toPath(item.url, domains)} onClick={close} className="mobile-menu__link">
-                {item.title}
+    <nav className="mm" aria-label="Menu principal">
+      {groups.map((group) => {
+        const cards = group.items.filter((c) => c.resource && 'image' in c.resource && c.resource.image);
+        const textOnly = group.items.filter((c) => !cards.includes(c));
+        return (
+          <section key={group.id} className="mm__group mm__in" style={{'--i': n++} as React.CSSProperties}>
+            <p className="eyebrow mm__eyebrow">{group.title}</p>
+            <ul className="mm__cards">
+              {cards.map((child) => {
+                const image = child.resource && 'image' in child.resource ? child.resource.image : null;
+                return (
+                  <li key={child.id}>
+                    <NavLink to={toPath(child.url, domains)} onClick={close} className="mm__card" prefetch="intent">
+                      <span className="mm__card-img">
+                        {image && <Image data={image} alt="" sizes="36vw" aspectRatio="4/5" loading="eager" />}
+                      </span>
+                      <span className="mm__card-title">{child.title}</span>
+                    </NavLink>
+                  </li>
+                );
+              })}
+            </ul>
+            {textOnly.map((child) => (
+              <NavLink key={child.id} to={toPath(child.url, domains)} onClick={close} className="link mm__all">
+                {child.title}
+              </NavLink>
+            ))}
+          </section>
+        );
+      })}
+
+      <ul className="mm__links">
+        {links.map((item) => {
+          const i = n++;
+          return (
+            <li key={item.id} className="mm__in" style={{'--i': i} as React.CSSProperties}>
+              <NavLink
+                to={item.url === '/' ? '/' : toPath(item.url, domains)}
+                end={item.url === '/'}
+                onClick={close}
+                className="mm__link"
+                prefetch="intent"
+              >
+                <span className="mm__num" aria-hidden="true">
+                  {String(i).padStart(2, '0')}
+                </span>
+                <span className="mm__label">{item.title}</span>
               </NavLink>
             </li>
-          ),
-        )}
-        <li>
-          <NavLink to="/account" onClick={close} className="mobile-menu__link">
-            Mon compte
-          </NavLink>
-        </li>
+          );
+        })}
       </ul>
+
+      <div className="mm__foot mm__in" style={{'--i': n++} as React.CSSProperties}>
+        <div className="mm__actions">
+          <NavLink to="/account" onClick={close} className="btn btn--secondary">
+            <span className="btn__label">Mon compte</span>
+          </NavLink>
+          <button type="button" className="btn btn--secondary" onClick={() => open('search')}>
+            <span className="btn__label">Rechercher</span>
+          </button>
+        </div>
+        <ul className="mm__social">
+          {SOCIALS.map((s) => (
+            <li key={s.href}>
+              <a className="link" href={s.href} target="_blank" rel="noopener noreferrer">
+                {s.label}
+                <span className="sr-only"> (nouvel onglet)</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+        <p className="mm__tag accent">Designed to be rare</p>
+      </div>
     </nav>
   );
 }
+
+const SOCIALS = CONTACT.channels.map((c) => ({label: c.title, href: c.href}));
 
 function MobileMenuToggle() {
   const {open, type} = useAside();

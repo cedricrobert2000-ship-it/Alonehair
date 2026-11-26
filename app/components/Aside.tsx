@@ -30,6 +30,7 @@ export function Aside({
       onClose={close}
       title={heading}
       side={type === 'mobile' ? 'left' : 'right'}
+      full={type === 'mobile'}
       footer={footer}
     >
       {children}

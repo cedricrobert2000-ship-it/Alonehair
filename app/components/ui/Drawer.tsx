@@ -18,6 +18,7 @@ export function Drawer({
   children,
   footer,
   side = 'right',
+  full = false,
 }: {
   open: boolean;
   onClose: () => void;
@@ -25,6 +26,8 @@ export function Drawer({
   children: React.ReactNode;
   footer?: React.ReactNode;
   side?: 'right' | 'left';
+  /** plein écran avec rideau qui descend (menu mobile) */
+  full?: boolean;
 }) {
   const rootRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -76,7 +79,7 @@ export function Drawer({
   return (
     <div
       ref={rootRef}
-      className={`drawer${side === 'left' ? ' drawer--left' : ''}${
+      className={`drawer${side === 'left' ? ' drawer--left' : ''}${full ? ' drawer--full' : ''}${
         open ? ' is-open' : ''
       }`}
     >

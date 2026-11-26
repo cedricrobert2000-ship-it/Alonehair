@@ -197,6 +197,9 @@
 
   /* Tiroirs */
   --drawer-w: 440px;
+  --mm-card-w: 36vw; /* vignettes collections du menu mobile */
+  --mm-delay: 250ms; /* les liens montent après le rideau */
+  --mm-stagger: 60ms;
 
   /* En-tête */
   --header-h-compact: 56px;
