@@ -1,3 +1,5 @@
+import type {HeroVideo} from '~/lib/hero';
+
 /**
  * Images d'ambiance hébergées dans le dépôt GitHub (dossier public/images).
  * Pour les remplacer sans toucher au code : public/images/LISEZMOI.md.
@@ -54,6 +56,23 @@ export const SITE_IMAGES: {
     height: 2000,
     alt: 'Femme aux cheveux longs bruns méchés, chemise rayée',
     position: '50% 25%',
+  },
+};
+
+/**
+ * Vidéos d'ambiance hébergées dans le dépôt (dossier public/videos).
+ * Prioritaires sur l'image du même bloc. `null` = revenir à l'image,
+ * puis à la vidéo du métaobjet home_hero.
+ * Encodage conseillé : MP4 H.264 sans son, ~1440 px de large (≈ 5 Mo) et une
+ * version portrait 540×960 pour mobile (≈ 3 Mo), « faststart ».
+ */
+const VDIR = '/videos/accueil';
+
+export const SITE_VIDEOS: {heroHome: {video: HeroVideo; videoMobile: HeroVideo} | null} = {
+  heroHome: {
+    // « Anne » : tournage Alone Hair (Drive), 39 s en boucle
+    video: {poster: `${VDIR}/hero-poster.webp`, sources: [{url: `${VDIR}/hero.mp4`, height: 810}]},
+    videoMobile: {poster: `${VDIR}/hero-poster.webp`, sources: [{url: `${VDIR}/hero-mobile.mp4`, height: 720}]},
   },
 };
 

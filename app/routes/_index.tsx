@@ -14,7 +14,7 @@ import {seoMeta} from '~/lib/seo';
 import {HERO_FIELDS_FRAGMENT, parseHero} from '~/lib/hero';
 import {BrandVideo} from '~/components/ui/BrandVideo';
 import {FitText} from '~/components/ui/FitText';
-import {SITE_IMAGES} from '~/lib/site-images';
+import {SITE_IMAGES, SITE_VIDEOS} from '~/lib/site-images';
 import {SiteImg} from '~/components/ui/SiteImg';
 import {Qualities} from '~/components/home/Qualities';
 import {Ticker} from '~/components/home/Ticker';
@@ -135,16 +135,20 @@ export default function Homepage() {
  * phrase + lien en bas à gauche, « ALONE HAIR » en texte géant sur toute la largeur.
  */
 function Hero({data}: {data: Data}) {
-  const hero = data.heroContent;
+  // Vidéo puis image hébergées dans GitHub (public/) si elles sont définies, sinon la vidéo Shopify
+  const repoVideo = SITE_VIDEOS.heroHome;
+  const repoImage = SITE_IMAGES.heroHome;
+  // Textes du métaobjet home_hero ; sans lui, le hero garde son média et le nom de la boutique
+  const hero = data.heroContent ?? (repoVideo || repoImage ? {video: null, videoMobile: null} : null);
   if (!hero) return null;
   const poster = data.bestSellers[0]?.images.nodes[0];
-  // Image hébergée dans GitHub (public/images) si elle est définie, sinon la vidéo Shopify
-  const repoImage = SITE_IMAGES.heroHome;
 
   return (
     <section className="hero" aria-label="À la une">
       <div className="hero__media">
-        {repoImage ? (
+        {repoVideo ? (
+          <BrandVideo video={repoVideo.video} videoMobile={repoVideo.videoMobile} className="hero__video" controlClassName="hero__toggle" />
+        ) : repoImage ? (
           <SiteImg image={repoImage} className="hero__video" sizes="100vw" priority />
         ) : hero.video ? (
           <BrandVideo video={hero.video} videoMobile={hero.videoMobile} className="hero__video" controlClassName="hero__toggle" />

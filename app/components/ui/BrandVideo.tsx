@@ -64,7 +64,7 @@ export function BrandVideo({
       <video
         ref={ref}
         className={className}
-        poster={(videoMobile ?? video).poster ?? video.poster}
+        poster={video.poster ?? videoMobile?.poster}
         muted
         loop
         playsInline
